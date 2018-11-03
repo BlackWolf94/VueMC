@@ -1,0 +1,16 @@
+{
+  "name": "@zidadindimon/vue-mc",
+  "version": "1.0.0",
+  "description": "vue model/collection system",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/gwynblaid/vue-mc.git"
+  },
+  "author": "Dmitro Zataidukh",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/gwynblaid/vue-mc#readme"
+}

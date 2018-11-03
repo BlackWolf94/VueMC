@@ -1,16 +1,35 @@
 {
   "name": "@zidadindimon/vue-mc",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "vue model/collection system",
-  "main": "./lib/index.js",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare" : "npm run build",
+    "prepublishOnly" : "npm test && npm run lint",
+    "preversion" : "npm run lint",
+    "version" : "npm run format && git add -A src",
+    "postversion" : "git push && git push --tags"
   },
   "repository": {
     "type": "git",
     "url": "git+ssh://git@bitbucket.org/gwynblaid/vue-mc.git"
   },
-  "author": "Dmitro Zataidukh",
+  "author": "Dmitro Zataidukh <zidadindimon@gmail.com>",
   "license": "ISC",
-  "homepage": "https://bitbucket.org/gwynblaid/vue-mc#readme"
+  "homepage": "https://bitbucket.org/gwynblaid/vue-mc#readme",
+  "devDependencies": {
+    "@types/jest": "^23.3.9",
+    "jest": "^23.6.0",
+    "prettier": "^1.14.3",
+    "ts-jest": "^23.10.4",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "typescript": "^3.1.6"
+  }
 }

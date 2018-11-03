@@ -1,1 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
+.idea
+src
+tsconfig.json
+tslint.json
+.prettierrc
+test
+jestconfig.json

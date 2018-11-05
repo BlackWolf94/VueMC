@@ -8,9 +8,7 @@ export interface Item extends Object {
 export interface TemplateModel <M extends Model> extends Array<M|Model>{}
 
 
-export default class Collection <M extends Model>{
-
-
+export default class Collection <M  extends Model>{
 
   public models: TemplateModel<M>;
   public loading;
@@ -71,5 +69,9 @@ export default class Collection <M extends Model>{
   private addOne(item: Item | Model) {
     this.models.push(this.initModel(item));
     return this;
+  }
+
+  replace (items: Array<Item> | Item = []) {
+    return this.clear().add(items)
   }
 }

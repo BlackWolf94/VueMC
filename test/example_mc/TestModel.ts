@@ -1,5 +1,4 @@
 import Model, { Attributes } from '../../src/modules/Model';
-import { TestModelMutations } from './TestModelMutations';
 
 export class TestModel extends Model{
   public name;

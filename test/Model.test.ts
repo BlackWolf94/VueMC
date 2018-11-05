@@ -1,4 +1,4 @@
-import Model, {Attributes} from "../src/Model";
+import Model, { Attributes } from '../src/modules/Model';
 
 describe("Base Model test", () => {
 
@@ -14,7 +14,7 @@ describe("Base Model test", () => {
             }
         }
 
-        let model = new TestModel();
+        const model = new TestModel();
         expect(model.name).toBe("Test");
         expect(model.id).toBe(null);
     });
@@ -40,9 +40,27 @@ describe("Base Model test", () => {
             }
         }
 
-        let model = new TestModel();
+      const model = new TestModel();
         expect(model.name).toBe("Mutations Test");
         expect(model.fullName).toBe("Full Mutations Test");
-    })
+    });
+
+  it('Init value test', () => {
+    class TestModel extends Model {
+      public name: string | undefined;
+      public id: null | undefined;
+
+      protected defaults(): Attributes {
+        return {
+          name: 'Test',
+          id: null,
+        };
+      }
+    }
+
+    const model = new TestModel({ name: 'name', id: 1 });
+    expect(model.name).toBe('name');
+    expect(model.id).toBe(1);
+  });
 
 });

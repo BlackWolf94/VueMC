@@ -1,38 +1,25 @@
 import Vue from "vue";
+import { Attributes, BaseModel, Mutations } from './Interfaces';
 
-export interface Mutation {
-    (value: any): any
-}
-
-export interface Attributes{
-    [key: string]: any
-}
-
-export interface Mutations {
-    [key: string]: Mutation
-}
-
-export default class Model {
+export default class Model extends BaseModel{
 
     protected init(attributes: Attributes = {}): void {
-        attributes = (<Attributes> Object).assign(this.defaults(), attributes);
+        attributes = (<Attributes> Object).assign(this.defaults, attributes);
         for (let key in attributes)
             Vue.set(this, key, attributes[key])
-
-        const mutations: Mutations = this.mutations();
-        for (const key in mutations)
-            Vue.set(this, key, mutations[key](attributes[key]))
+        for (const key in this.mutations)
+            Vue.set(this, key, this.mutations[key](attributes[key]))
     }
 
-    constructor(attributes: Object = {}){
-        this.init(attributes)
+    constructor(attributes: Attributes = {}){
+       super(attributes)
     }
 
-    protected defaults (): Attributes {
+    get defaults (): Attributes {
         return{}
     }
 
-    protected mutations(): Mutations {
+    get mutations(): Mutations {
         return {}
     }
 }

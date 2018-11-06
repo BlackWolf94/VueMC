@@ -1,5 +1,5 @@
-import Collection from './modules/Collection';
 import Model from './modules/Model';
+import BaseCollection from './modules/BaseCollection';
 
-export {Model, Collection};
+export {Model, BaseCollection};
 

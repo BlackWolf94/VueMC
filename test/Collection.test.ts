@@ -46,4 +46,32 @@ describe("Simple Collection test", () => {
     collection.clear();
     expect(collection.models.length).toBe(0);
   });
+
+  it('Find one in collection', function() {
+    collection.add(generetae(20));
+    expect(collection.find({id: 1})).toMatchObject({ name: 'Item 1', id: 1 });
+  });
+
+  it('Filter in collection use object', function() {
+    expect(collection.filter({id: 1}).length).toBe(1);
+    expect(collection.filter({id: 1})).toEqual(expect.arrayContaining([{ name: 'Item 1', id: 1 }]));
+  });
+
+  it('Filter in collection use function', function() {
+    expect(collection.filter((item => item.id === 1)).length).toBe(1);
+    expect(collection.filter((item => item.id === 1))).toEqual(expect.arrayContaining([{ name: 'Item 1', id: 1 }]));
+  });
+
+  it('Init collection large data', function() {
+    collection.replace(generetae(2000));
+    expect(collection.models.length).toBe(2000);
+  });
+
+  it('Remove item', function() {
+    collection.removeItem({name: 'Item 1'});
+    expect(collection.find({name: 'Item 1'})).toBe(undefined);
+    expect(collection.models.length).toBe(1999);
+  });
+
+
 });

@@ -3,7 +3,7 @@ import { TestModel } from './TestModel';
 export class TestModelMutations extends TestModel {
   public fullName;
 
-  protected mutations(){
+  get mutations(){
     let self = this;
     return {
       name: (name: string) => `Mutations ${name}`,

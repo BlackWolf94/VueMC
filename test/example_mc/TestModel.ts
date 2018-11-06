@@ -1,10 +1,10 @@
-import Model, { Attributes } from '../../src/modules/Model';
+import Model from '../../src/modules/Model';
 
 export class TestModel extends Model{
-  public name;
-  public id;
+  public name: any;
+  public id: any;
 
-  protected defaults(): Attributes {
+  get defaults(){
     return {
       name: 'Test',
       id: null

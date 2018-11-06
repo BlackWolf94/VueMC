@@ -1,16 +1,12 @@
 import Vue from 'vue';
 import Model from './Model';
+import {Finder} from 'arraysearch'
+import TypeHelper from '@zidadindimon/js-typehelper';
+import { BaseModel, FilterIteration, Item } from './Interfaces';
 
-export interface Item extends Object {
-  [key: string]: any
-}
+export default class BaseCollection <M extends BaseModel>{
 
-export interface TemplateModel <M extends Model> extends Array<M|Model>{}
-
-
-export default class Collection <M  extends Model>{
-
-  public models: TemplateModel<M>;
+  public models: Array<M>;
   public loading;
   private timer_id;
 
@@ -39,7 +35,7 @@ export default class Collection <M  extends Model>{
     return this;
   }
 
-  search (search: string = ''): TemplateModel<M> {
+  search (search: string = ''): Array<M> {
     return this.models.filter(
       model => JSON.stringify(model)
         .toLowerCase()
@@ -59,10 +55,11 @@ export default class Collection <M  extends Model>{
     return Model
   }
 
-  protected initModel(item: Item | Model): M | Model {
-    if (item instanceof Model)
+  protected initModel(item: Item | M): M {
+    if (item instanceof BaseModel)
       return item;
     const model = this.model(item);
+    // @ts-ignore
     return new model(item);
   }
 
@@ -74,4 +71,28 @@ export default class Collection <M  extends Model>{
   replace (items: Array<Item> | Item = []) {
     return this.clear().add(items)
   }
+
+  find(filter: object): M | Model {
+    return Finder.one.in(this.models).with(filter)
+  }
+
+  filter(filter: FilterIteration<M> | object): Array<M> {
+    if(TypeHelper.isFunction(filter)) {
+      // @ts-ignore
+      return this.models.filter(filter);
+    }
+
+    return Finder.all.in(this.models).with(filter)
+  }
+
+  removeItem(filter: object){
+    const item = JSON.stringify(this.find(filter));
+    for(let idx = 0; idx < this.models.length; idx++){
+      if(JSON.stringify(this.models[idx]) !== item)
+        continue;
+      this.models.splice(idx, 1)
+    }
+    return JSON.parse(item)
+  }
+
 }

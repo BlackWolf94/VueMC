@@ -1,4 +1,5 @@
-import TestCollection from './example_mc/TestCollection';
+import {Collection, Model} from '../src';
+import { send } from '../src/modules/Interfaces';
 
 const generetae = count => {
   let data: object[] = [];
@@ -11,39 +12,39 @@ const generetae = count => {
   return data
 };
 
+const apiSend = async (filters) => {
+  return {
+    content: generetae(filters.pager.size),
+    pages: 1
+  }
+};
 
-describe("Simple Collection test", () => {
-  const collection = new TestCollection(generetae(3));
+class CollectionTest extends Collection <Model>{
 
-  it('Simple init', function() {
-    expect(collection.models.length).toBe(3);
-  });
+  model(){
+    return Model
+  }
 
-  it('Add many to collection', function() {
-    collection.add(generetae(3));
-    expect(collection.models.length).toBe(6);
+  get updateMethod(): send {
+    return apiSend
+  }
 
-  });
+}
 
-  it('Add one to collection', function() {
-    collection.add({
-      id: 7,
-      name: `Item ${7}`
-    });
-    expect(collection.models.length).toBe(7);
-  });
+describe('Collection test', () => {
 
-  it('Search in collection', function() {
-    expect(collection.search('item 1').length).toBe(2);
-  });
+  const collection = new CollectionTest();
 
-  it('Replace collection', function() {
-    collection.replace(generetae(3));
-    expect(collection.models.length).toBe(3);
-  });
+  it('INIT COLLECTION',() => {
+    collection.update()
+      .then(() => {
+        expect(collection.models.length).toBe(25);
+        expect(collection.totalItems).toBe(25);
+        collection.destruct();
+        expect(collection.models.length).toBe(0);
 
-  it('Clear in collection', function() {
-    collection.clear();
-    expect(collection.models.length).toBe(0);
-  });
+      });
+
+  })
+
 });

@@ -1,77 +1,86 @@
-import Vue from 'vue';
+import BaseCollection from './BaseCollection';
 import Model from './Model';
-
-export interface Item extends Object {
-  [key: string]: any
-}
-
-export interface TemplateModel <M extends Model> extends Array<M|Model>{}
+import { BaseModel, Item, send } from './Interfaces';
+import Vue  from 'vue';
+import merge from 'deepmerge'
+import TypeHelper from '@zidadindimon/js-typehelper';
 
 
-export default class Collection <M  extends Model>{
 
-  public models: TemplateModel<M>;
-  public loading;
-  private timer_id;
+export default class Collection <M extends Model> extends BaseCollection <Model> {
 
-  constructor(models: Array<Item> | Item = [], filters: object = {}) {
-    this.models = [];
-    this.clear()
-      .toggleLoading(false)
-      .add(models)
-    ;
+  protected $timer_id: any;
+  protected $filters: any;
+  protected $pages;
+
+  constructor(models: Array<Item> | Item = [], filters: object = {}){
+    super(models);
+    this.updateFilters(filters);
   }
 
-  public clear() {
-    Vue.set(this, 'models', []);
-    return this;
-  }
-
-  public add(items: Array<Item> | Item = []){
-    this.toggleLoading(true);
-    if (!(items instanceof Array))
-      items = [items];
-
-    for (let idx = 0; idx < items.length; idx++) {
-      this.addOne(items[idx]);
+  get defaultFilter() {
+    return {
+      pager: {
+        size: 25,
+        page: 0,
+      }
     }
-    this.toggleLoading(false);
-    return this;
   }
 
-  search (search: string = ''): TemplateModel<M> {
-    return this.models.filter(
-      model => JSON.stringify(model)
-        .toLowerCase()
-        .match(search.toLowerCase()))
+  get totalItems () {
+    if (this.$filters) { return this.pages * this.$filters.pager.size }
+    return this.pages * this.defaultFilter.pager.size
   }
 
-  protected get updateInterval() {
-    return 0;
+  get pages () {
+    return this.$pages
   }
 
-  protected toggleLoading(value: boolean) {
-    this.loading = value;
-    return this;
+
+  get updateInterval () {
+    return 0
+  };
+
+  private updateFilters = (filters: object = {}) => {
+    let _filters = merge(this.defaultFilter, this.$filters || {});
+    if (!TypeHelper.isEmpty(filters)) { _filters = merge(_filters, filters) }
+    Vue.set(this, '$filters', _filters)
+  };
+
+  get updateMethod(): send {
+    throw new Error('Implement this method')
   }
 
-  protected model(item: Item | Model) {
-    return Model
+  destruct () {
+    clearInterval(this.$timer_id);
+    this.clear()
   }
 
-  protected initModel(item: Item | Model): M | Model {
-    if (item instanceof Model)
-      return item;
-    const model = this.model(item);
-    return new model(item);
+  update (filters = {}): Promise<Collection<M>> {
+    this.toggleLoading(true);
+    this.updateFilters(filters);
+
+    const update = async () => {
+      const {content, pages} = await this.updateMethod(this.$filters);
+      this.$pages = pages;
+      this.replace(content);
+      return this;
+    };
+
+    clearInterval(this.$timer_id);
+    if (this.updateInterval) {
+      this.$timer_id = setInterval(update, this.updateInterval)
+    }
+
+    return update()
   }
 
-  private addOne(item: Item | Model) {
-    this.models.push(this.initModel(item));
-    return this;
+  pagination (page: number) {
+    return this.update(merge(this.$filters, {pager: { page: page}}))
   }
 
-  replace (items: Array<Item> | Item = []) {
-    return this.clear().add(items)
+  static instant (filters = {}) {
+    return (new this()).update(filters)
   }
+
 }

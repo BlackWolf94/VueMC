@@ -2,7 +2,9 @@
 
 API
 ===
+
 Docs generated using [`docts`](https://github.com/charto/docts)
+
 >
 > <a name="api-BaseCollection"></a>
 > ### Class [`BaseCollection`](#api-BaseCollection)

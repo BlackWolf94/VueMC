@@ -1,11 +1,11 @@
-import BaseCollection from './BaseCollection';
-import Model from './Model';
-import { BaseModel, Item, send } from './Interfaces';
+import {BaseCollection} from './BaseCollection';
+import {Model} from './Model';
+import {Item, send } from './Interfaces';
 import Vue from 'vue';
 import merge from 'deepmerge';
 import TypeHelper from '@zidadindimon/js-typehelper';
 
-export default class Collection<M extends Model> extends BaseCollection<Model> {
+export  class Collection<M extends Model> extends BaseCollection<Model> {
   protected $timer_id: any;
   protected $filters: any;
   protected $pages;

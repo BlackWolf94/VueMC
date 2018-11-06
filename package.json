@@ -5,6 +5,10 @@
   "main": "lib/index.js",
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
+  "typings": "lib/index.d.ts",
+  "bin": {
+    "docts": "docts"
+  },
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",
@@ -14,7 +18,8 @@
     "prepublishOnly": "npm test && npm run format && npm run prepare",
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags"
+    "postversion": "git push && git push --tags",
+    "docs": "npm run prepare && docts"
   },
   "repository": {
     "type": "git",
@@ -25,11 +30,14 @@
   "homepage": "https://bitbucket.org/gwynblaid/vue-mc#readme",
   "devDependencies": {
     "@types/jest": "^23.3.9",
+    "docts": "^0.2.0",
     "jest": "^23.6.0",
     "prettier": "^1.14.3",
     "ts-jest": "^23.10.4",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
+    "typedoc": "^0.13.0",
+    "typedoc-markdown-theme": "0.0.4",
     "typescript": "^3.1.6"
   },
   "dependencies": {

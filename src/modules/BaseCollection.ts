@@ -1,10 +1,10 @@
 import Vue from 'vue';
-import Model from './Model';
+import {Model} from './Model';
 import { Finder } from 'arraysearch';
 import TypeHelper from '@zidadindimon/js-typehelper';
 import { BaseModel, FilterIteration, Item } from './Interfaces';
 
-export default class BaseCollection<M extends BaseModel> {
+export  class BaseCollection<M extends BaseModel> {
   public models: Array<M>;
   public loading;
 

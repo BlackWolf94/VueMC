@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { Attributes, BaseModel, Mutations } from './Interfaces';
 
-export default class Model extends BaseModel {
+export class Model extends BaseModel {
   protected init(attributes: Attributes = {}): void {
     attributes = (<Attributes>Object).assign(this.defaults, attributes);
     for (let key in attributes) Vue.set(this, key, attributes[key]);

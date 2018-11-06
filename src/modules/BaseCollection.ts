@@ -8,9 +8,8 @@ export default class BaseCollection <M extends BaseModel>{
 
   public models: Array<M>;
   public loading;
-  private timer_id;
 
-  constructor(models: Array<Item> | Item = [], filters: object = {}) {
+  constructor(models: Array<Item> | Item = []) {
     this.models = [];
     this.clear()
       .toggleLoading(false)
@@ -40,10 +39,6 @@ export default class BaseCollection <M extends BaseModel>{
       model => JSON.stringify(model)
         .toLowerCase()
         .match(search.toLowerCase()))
-  }
-
-  protected get updateInterval() {
-    return 0;
   }
 
   protected toggleLoading(value: boolean) {

@@ -25,3 +25,7 @@ export interface FilterIteration <M extends BaseModel> {
 export interface Item extends Object {
   [key: string]: any
 }
+
+export interface send {
+  (data?: any): Promise<{content: any[], pages: number}>
+}

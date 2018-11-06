@@ -1,11 +1,10 @@
 import Vue from 'vue';
 import Model from './Model';
-import {Finder} from 'arraysearch'
+import { Finder } from 'arraysearch';
 import TypeHelper from '@zidadindimon/js-typehelper';
 import { BaseModel, FilterIteration, Item } from './Interfaces';
 
-export default class BaseCollection <M extends BaseModel>{
-
+export default class BaseCollection<M extends BaseModel> {
   public models: Array<M>;
   public loading;
 
@@ -13,8 +12,7 @@ export default class BaseCollection <M extends BaseModel>{
     this.models = [];
     this.clear()
       .toggleLoading(false)
-      .add(models)
-    ;
+      .add(models);
   }
 
   public clear() {
@@ -22,10 +20,9 @@ export default class BaseCollection <M extends BaseModel>{
     return this;
   }
 
-  public add(items: Array<Item> | Item = []){
+  public add(items: Array<Item> | Item = []) {
     this.toggleLoading(true);
-    if (!(items instanceof Array))
-      items = [items];
+    if (!(items instanceof Array)) items = [items];
 
     for (let idx = 0; idx < items.length; idx++) {
       this.addOne(items[idx]);
@@ -34,11 +31,12 @@ export default class BaseCollection <M extends BaseModel>{
     return this;
   }
 
-  search (search: string = ''): Array<M> {
-    return this.models.filter(
-      model => JSON.stringify(model)
+  search(search: string = ''): Array<M> {
+    return this.models.filter(model =>
+      JSON.stringify(model)
         .toLowerCase()
-        .match(search.toLowerCase()))
+        .match(search.toLowerCase()),
+    );
   }
 
   protected toggleLoading(value: boolean) {
@@ -47,12 +45,11 @@ export default class BaseCollection <M extends BaseModel>{
   }
 
   protected model(item: Item | Model) {
-    return Model
+    return Model;
   }
 
   protected initModel(item: Item | M): M {
-    if (item instanceof BaseModel)
-      return item;
+    if (item instanceof BaseModel) return item;
     const model = this.model(item);
     // @ts-ignore
     return new model(item);
@@ -63,31 +60,29 @@ export default class BaseCollection <M extends BaseModel>{
     return this;
   }
 
-  replace (items: Array<Item> | Item = []) {
-    return this.clear().add(items)
+  replace(items: Array<Item> | Item = []) {
+    return this.clear().add(items);
   }
 
   find(filter: object): M | Model {
-    return Finder.one.in(this.models).with(filter)
+    return Finder.one.in(this.models).with(filter);
   }
 
   filter(filter: FilterIteration<M> | object): Array<M> {
-    if(TypeHelper.isFunction(filter)) {
+    if (TypeHelper.isFunction(filter)) {
       // @ts-ignore
       return this.models.filter(filter);
     }
 
-    return Finder.all.in(this.models).with(filter)
+    return Finder.all.in(this.models).with(filter);
   }
 
-  removeItem(filter: object){
+  removeItem(filter: object) {
     const item = JSON.stringify(this.find(filter));
-    for(let idx = 0; idx < this.models.length; idx++){
-      if(JSON.stringify(this.models[idx]) !== item)
-        continue;
-      this.models.splice(idx, 1)
+    for (let idx = 0; idx < this.models.length; idx++) {
+      if (JSON.stringify(this.models[idx]) !== item) continue;
+      this.models.splice(idx, 1);
     }
-    return JSON.parse(item)
+    return JSON.parse(item);
   }
-
 }

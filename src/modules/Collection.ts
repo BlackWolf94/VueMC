@@ -10,6 +10,7 @@ export class Collection<M extends Model> extends BaseCollection<Model> {
   protected $filters: any;
   protected $pages;
 
+
   constructor(models: Array<Item> | Item = [], filters: object = {}) {
     super(models);
     this.updateFilters(filters);
@@ -39,7 +40,7 @@ export class Collection<M extends Model> extends BaseCollection<Model> {
     return 0;
   }
 
-  private updateFilters = (filters: object = {}) => {
+  protected updateFilters = (filters: object = {}) => {
     let _filters = merge(this.defaultFilter, this.$filters || {});
     if (!TypeHelper.isEmpty(filters)) {
       _filters = merge(_filters, filters);

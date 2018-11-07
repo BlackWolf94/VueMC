@@ -8,14 +8,14 @@ export class BaseCollection<M extends BaseModel> {
   public models: Array<M>;
   public loading;
 
-  protected init(){}
+  protected init() {}
 
   constructor(models: Array<Item> | Item = []) {
     this.models = [];
     this.clear()
       .toggleLoading(false)
       .add(models);
-    this.init()
+    this.init();
   }
 
   public clear() {

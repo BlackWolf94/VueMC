@@ -10,7 +10,6 @@ export class Collection<M extends Model> extends BaseCollection<Model> {
   protected $filters: any;
   protected $pages;
 
-
   constructor(models: Array<Item> | Item = [], filters: object = {}) {
     super(models);
     this.updateFilters(filters);

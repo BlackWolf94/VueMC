@@ -6,9 +6,6 @@
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "typings": "lib/index.d.ts",
-  "bin": {
-    "docts": "docts"
-  },
   "scripts": {
     "test": "jest --config jestconfig.json",
     "build": "tsc",

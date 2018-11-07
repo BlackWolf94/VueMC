@@ -15,8 +15,8 @@ export abstract class BaseModel {
   protected constructor(attributes: Attributes = {}) {
     this.init(attributes);
   }
-  abstract get defaults(): Attributes;
-  abstract get mutations(): Mutations;
+  abstract defaults(): Attributes;
+  abstract mutations(): Mutations;
 }
 
 export interface FilterIteration<M extends BaseModel> {

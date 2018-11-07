@@ -1,10 +1,10 @@
-import Model from '../../src/modules/Model';
+import {Model} from '../../src/modules/Model';
 
 export class TestModel extends Model{
   public name: any;
   public id: any;
 
-  get defaults(){
+  defaults(){
     return {
       name: 'Test',
       id: null

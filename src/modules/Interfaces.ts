@@ -1,31 +1,31 @@
 export interface Mutation {
-  (value: any): any
+  (value: any): any;
 }
 
-export interface Attributes{
-  [key: string]: any
+export interface Attributes {
+  [key: string]: any;
 }
 
 export interface Mutations {
-  [key: string]: Mutation
+  [key: string]: Mutation;
 }
 
-export abstract class  BaseModel {
-  protected abstract init(attributes: Attributes)
-  protected constructor(attributes: Attributes = {}){
-    this.init(attributes)
+export abstract class BaseModel {
+  protected abstract init(attributes: Attributes);
+  protected constructor(attributes: Attributes = {}) {
+    this.init(attributes);
   }
-  abstract get defaults (): Attributes
-  abstract get mutations(): Mutations
+  abstract defaults(): Attributes;
+  abstract mutations(): Mutations;
 }
 
-export interface FilterIteration <M extends BaseModel> {
-  (item: M, index: number) : boolean
+export interface FilterIteration<M extends BaseModel> {
+  (item: M, index: number): boolean;
 }
 export interface Item extends Object {
-  [key: string]: any
+  [key: string]: any;
 }
 
 export interface send {
-  (data?: any): Promise<{content: any[], pages: number}>
+  (data?: any): Promise<{ content: any[]; pages: number }>;
 }

@@ -5,20 +5,38 @@ import TypeHelper from '@zidadindimon/js-typehelper';
 import { BaseModel, FilterIteration, Item } from './Interfaces';
 
 export class BaseCollection<M extends BaseModel> {
+  // @ts-ignore
   public models: Array<M>;
   public loading;
+  protected selected;
+  static instant;
 
-  protected init() {}
+  protected init() {
+  }
 
   constructor(models: Array<Item> | Item = []) {
-    this.models = [];
+
+    // @ts-ignore
+    if (!!this.singleton && !!this.constructor.instant) {
+      // @ts-ignore
+      return this.constructor.instant;
+    }
+
+
+    if (!!this.singleton) {
+      // @ts-ignore
+      this.constructor.instant = this;
+    }
+
     this.clear()
       .toggleLoading(false)
       .add(models);
     this.init();
+
   }
 
   public clear() {
+    this.selected = 0;
     Vue.set(this, 'models', []);
     return this;
   }
@@ -87,5 +105,25 @@ export class BaseCollection<M extends BaseModel> {
       this.models.splice(idx, 1);
     }
     return JSON.parse(item);
+  }
+
+  public select(index: number) {
+    this.selected = index;
+  }
+
+  get active() {
+    return this.models[this.selected] || null;
+  }
+
+  get first() {
+    return this.models[0] || null;
+  }
+
+  get last() {
+    return this.models[this.models.length - 1] || null;
+  }
+
+  get singleton() {
+    return false;
   }
 }

@@ -25,6 +25,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/gwynblaid/vue-mc#readme",
   "devDependencies": {
+    "@types/core-js": "^2.5.0",
     "@types/jest": "^23.3.9",
     "docts": "^0.2.0",
     "jest": "^23.6.0",

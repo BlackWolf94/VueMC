@@ -56,14 +56,18 @@ export class Collection<M extends Model> extends BaseCollection<Model> {
     this.clear();
   }
 
+  beforeUpdate(){}
+
   update(filters = {}): Promise<Collection<M>> {
     this.toggleLoading(true);
     this.updateFilters(filters);
 
     const update = async () => {
+      this.beforeUpdate();
       const { content, pages } = await this.updateMethod(this.$filters);
       this.$pages = pages;
       this.replace(content);
+      this.afterUpdate();
       return this;
     };
 
@@ -74,9 +78,14 @@ export class Collection<M extends Model> extends BaseCollection<Model> {
 
     return update();
   }
+  afterUpdate(){}
 
   pagination(page: number) {
     return this.update(merge(this.$filters, { pager: { page: page } }));
+  }
+
+  protected configureDefaultFilter (data) {
+    return merge(this.defaultFilter, data)
   }
 
   static instant(filters = {}) {

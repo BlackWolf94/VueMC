@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { Model } from './Model';
 import { Finder } from 'arraysearch';
 import TypeHelper from '@zidadindimon/js-typehelper';
-import { BaseModel, FilterIteration, Item } from './Interfaces';
+import { BaseModel, IFilterIteration, IItem } from './Interfaces';
 
 export class BaseCollection<M extends BaseModel> {
   // @ts-ignore
@@ -14,7 +14,7 @@ export class BaseCollection<M extends BaseModel> {
   protected init() {
   }
 
-  constructor(models: Array<Item> | Item = []) {
+  constructor(models: Array<IItem> | IItem = []) {
 
     // @ts-ignore
     if (!!this.singleton && !!this.constructor.instant) {
@@ -41,7 +41,7 @@ export class BaseCollection<M extends BaseModel> {
     return this;
   }
 
-  public add(items: Array<Item> | Item = []) {
+  public add(items: Array<IItem> | IItem = []) {
     this.toggleLoading(true);
     if (!(items instanceof Array)) items = [items];
 
@@ -65,23 +65,23 @@ export class BaseCollection<M extends BaseModel> {
     return this;
   }
 
-  protected model(item: Item | Model) {
+  protected model(item: IItem | Model) {
     return Model;
   }
 
-  protected initModel(item: Item | M): M {
+  protected initModel(item: IItem | M): M {
     if (item instanceof BaseModel) return item;
     const model = this.model(item);
     // @ts-ignore
     return new model(item);
   }
 
-  private addOne(item: Item | Model) {
+  private addOne(item: IItem | Model) {
     this.models.push(this.initModel(item));
     return this;
   }
 
-  replace(items: Array<Item> | Item = []) {
+  replace(items: Array<IItem> | IItem = []) {
     return this.clear().add(items);
   }
 
@@ -89,7 +89,7 @@ export class BaseCollection<M extends BaseModel> {
     return Finder.one.in(this.models).with(filter);
   }
 
-  filter(filter: FilterIteration<M> | object): Array<M> {
+  filter(filter: IFilterIteration<M> | object): Array<M> {
     if (TypeHelper.isFunction(filter)) {
       // @ts-ignore
       return this.models.filter(filter);

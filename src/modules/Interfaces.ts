@@ -19,13 +19,13 @@ export abstract class BaseModel {
   abstract mutations(): Mutations;
 }
 
-export interface FilterIteration<M extends BaseModel> {
+export interface IFilterIteration<M extends BaseModel> {
   (item: M, index: number): boolean;
 }
-export interface Item extends Object {
+export interface IItem extends Object {
   [key: string]: any;
 }
 
-export interface send {
+export interface ISend {
   (data?: any): Promise<{ content: any[]; pages: number }>;
 }

@@ -1,5 +1,5 @@
 import {Collection, Model} from '../src';
-import { send } from '../src/modules/Interfaces';
+import { ISend } from '../src/modules/Interfaces';
 
 const generetae = count => {
   let data: object[] = [];
@@ -25,7 +25,7 @@ class CollectionTest extends Collection <Model>{
     return Model
   }
 
-  get updateMethod(): send {
+  get updateMethod(): ISend {
     return apiSend
   }
 

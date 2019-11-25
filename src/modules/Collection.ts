@@ -1,6 +1,6 @@
 import { BaseCollection } from './BaseCollection';
 import { Model } from './Model';
-import { Item, send } from './Interfaces';
+import { IItem, ISend } from './Interfaces';
 import Vue from 'vue';
 import merge from 'deepmerge';
 import TypeHelper from '@zidadindimon/js-typehelper';
@@ -10,7 +10,7 @@ export class Collection<M extends Model> extends BaseCollection<Model> {
   protected $filters: any;
   protected $pages;
 
-  constructor(models: Array<Item> | Item = [], filters: object = {}) {
+  constructor(models: Array<IItem> | IItem = [], filters: object = {}) {
     super(models);
     this.updateFilters(filters);
   }
@@ -47,7 +47,7 @@ export class Collection<M extends Model> extends BaseCollection<Model> {
     Vue.set(this, '$filters', _filters);
   };
 
-  get updateMethod(): send {
+  get updateMethod(): ISend {
     throw new Error('Implement this method');
   }
 

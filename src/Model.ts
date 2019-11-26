@@ -8,8 +8,10 @@ import { TApiConf } from './types/TApiConf';
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
 import { ErrorHandler } from './ErrorHandler';
+import { ICollection } from './types/ICollection';
 
 export class BaseModel implements IModel {
+  protected $collection: ICollection<IModel> = null;
   constructor(data: TObject) {
     this.fetchData(data);
   }
@@ -72,16 +74,19 @@ export class BaseModel implements IModel {
     return true;
   }
 
+  @ErrorHandler()
   async delete(): Promise<boolean> {
     this.onDelete(await this.api().delete());
     return true;
   }
 
+  @ErrorHandler()
   async save(): Promise<boolean> {
     this.onSave(await this.api().save(this.prepareForSave()));
     return true;
   }
 
+  @ErrorHandler()
   async update(): Promise<boolean> {
     this.onSave(await this.api().update(this.prepareForSave()));
     return true;
@@ -97,5 +102,10 @@ export class BaseModel implements IModel {
   }
 
   onUpdate(data: any): void {
+  }
+
+  setCollection(collection: ICollection<BaseModel>): this{
+    this.$collection = collection;
+    return this
   }
 }

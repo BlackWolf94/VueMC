@@ -1,4 +1,3 @@
-import { IItem } from '../modules/Interfaces';
 import { TObject } from './IModel';
 
 /**
@@ -7,12 +6,31 @@ import { TObject } from './IModel';
  */
 
 export interface ICollection<M> {
-  models: M[];
-  modelsMap: Map<string| number, M>;
   first(): M;
-  last():M;
-  active():M;
-  select(index: number): M;
-  add(items: (M | TObject)[] | M | TObject ): this;
-  remove(el: (M | number)[] | M | number): this
+
+  last(): M;
+
+  active(): M;
+
+  select(index: number): this;
+
+  add(items: (M | TObject)[] | M | TObject): this;
+
+  remove(el: M[] | M): this
+
+  remove(index: number | number []): this
+
+  get(index: number): M;
+
+  destruct(): void;
+
+  fetch(filters?: TCollectionFilter): Promise<this>;
+
+  updateInterval(): number;
+
 }
+
+export type TCollectionFilter<T = any> = {
+  size: number;
+  page: number;
+} | T

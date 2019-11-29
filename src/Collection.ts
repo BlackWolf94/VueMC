@@ -1,20 +1,21 @@
 import { IModel, TObject } from './types/IModel';
-import { ICollection } from './types/ICollection';
+import { ICollection, TCollectionFilter } from './types/ICollection';
 import Vue from 'vue';
 import { BaseModel } from './Model';
+import TypeHelper from '@zidadindimon/js-typehelper';
 
 /**
  * @author Dimitry Zataidukh
  * @email zidadindimon@gmail.com
  * @created_at 11/26/19
  */
-export class BaseCollection<M extends BaseModel> implements ICollection<M>{
-  models: M[];
-  modelsMap: Map<string | number, M> = new Map<string|number, M>();
-  selected: number = null;
+export class BaseCollection<M extends BaseModel, F = TObject> implements ICollection<M>{
+  protected models: M[];
+  protected modelsMap: Map<string | number, M> = new Map<string|number, M>();
+  protected selected: M ;
+  protected filters: TCollectionFilter<F>;
 
   clear(): this {
-    this.selected = null;
     Vue.set(this, 'models', []);
     return this;
   }
@@ -24,7 +25,7 @@ export class BaseCollection<M extends BaseModel> implements ICollection<M>{
   }
 
   active(): M {
-    return undefined;
+    return this.selected;
   }
 
   protected model(item: TObject | M): typeof BaseModel {
@@ -45,8 +46,7 @@ export class BaseCollection<M extends BaseModel> implements ICollection<M>{
 
   add(items: (TObject | M)[] | TObject | M): this {
     if(!Array.isArray(items)) items = [items];
-    (items as (TObject | M)[]).forEach( this.addItem.bind(this))
-
+    (items as (TObject | M)[]).forEach( this.addItem.bind(this));
     return this;
   }
 
@@ -55,15 +55,50 @@ export class BaseCollection<M extends BaseModel> implements ICollection<M>{
   }
 
   last(): M {
-    return this.models.length ? this.models[this.models.length - 1] : null;
+    const {length} = this.models;
+    return length ? this.models[length - 1] : null;
+  }
+
+  protected removeItem(el: number | M) {
+    const index: number = TypeHelper.isNumber(el) ? el as number : this.models.findIndex( model => model === el);
+    this.models.splice(index,1);
+    return this;
   }
 
   remove(el: (number | M)[] | number | M): this {
-    return undefined;
+    const arr = Array.isArray(el) ? el : [el];
+    arr.forEach(this.removeItem.bind(this));
+    return this;
   }
 
-  select(index: number): M {
-    return undefined;
+  select(index: number): this {
+    this.selected = this.models[index];
+    return this;
   }
 
+  get(index: number): M {
+    return this.models[index]
+  }
+
+  protected defFilter(): TCollectionFilter<F>{
+    return {
+      page: 0,
+      size: 50,
+    }
+  }
+
+  protected mutateFilter(filters){
+    return filters
+  }
+
+  setFilters(filters: TObject = {}){
+    Vue.set(this, 'filters', this.mutateFilter({
+      ...this.defFilter(),
+      ...this.filters || {},
+      ...filters}));
+  }
+
+  updateInterval(): number {
+    return  0
+  }
 }

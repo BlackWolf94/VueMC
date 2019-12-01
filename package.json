@@ -38,9 +38,8 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
+    "@types/node": "^12.12.14",
     "@zidadindimon/js-typehelper": "^1.0.17",
-    "arraysearch": "^1.2.0",
-    "deepmerge": "^2.2.1",
     "vue": "^2.6.10"
   }
 }

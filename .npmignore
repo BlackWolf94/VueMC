@@ -1,9 +1,3 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea
-src
-node_modules
-tsconfig.json
-tslint.json
-.prettierrc
-test
-jestconfig.json
+

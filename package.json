@@ -1,6 +1,6 @@
 {
   "name": "@zidadindimon/vue-mc",
-  "version": "0.0.10",
+  "version": "1.0.0",
   "description": "vue model/collection system",
   "main": "lib/index.js",
   "module": "lib/index.js",

@@ -37,7 +37,7 @@ export class BaseCollection<M extends BaseModel, F = TObject> implements ICollec
   }
 
   get pageSize(): number {
-    return this.models.length
+    return this.models.length;
   }
 
   protected initModel(item: TObject | M): M {
@@ -72,7 +72,7 @@ export class BaseCollection<M extends BaseModel, F = TObject> implements ICollec
   }
 
   protected removeItem(el: number | M) {
-    const index: number = TypeHelper.isNumber(el) ? el as number : this.models.findIndex(model => model === el);
+    const index: number = TypeHelper.isNumber(el) ? (el as number) : this.models.findIndex(model => model === el);
     this.models.splice(index, 1);
     return this;
   }
@@ -104,11 +104,15 @@ export class BaseCollection<M extends BaseModel, F = TObject> implements ICollec
   }
 
   setFilters(filters: TObject = {}): this {
-    Vue.set(this, 'filters', this.mutateFilter({
-      ...this.defFilter(),
-      ...this.filters || {},
-      ...filters,
-    }));
+    Vue.set(
+      this,
+      'filters',
+      this.mutateFilter({
+        ...this.defFilter(),
+        ...(this.filters || {}),
+        ...filters,
+      }),
+    );
     return this;
   }
 
@@ -155,11 +159,11 @@ export class BaseCollection<M extends BaseModel, F = TObject> implements ICollec
     return this.models[Symbol.iterator]();
   }
 
-  get length(){
-    return this.models.length
+  get length() {
+    return this.models.length;
   }
 
-  get filter(): TCollectionFilter<F>{
+  get filter(): TCollectionFilter<F> {
     return this.filters;
   }
 }

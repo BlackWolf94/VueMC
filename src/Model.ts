@@ -42,11 +42,9 @@ export class BaseModel implements IModel {
   }
 
   set(data?: TObject): this {
-
     if (data) {
       data = { ...this.default(), ...data };
-      Object.keys(data)
-        .forEach(key => (Vue.set(this, key, data[key])));
+      Object.keys(data).forEach(key => Vue.set(this, key, data[key]));
     }
 
     const mutations = this.mutations();
@@ -100,16 +98,11 @@ export class BaseModel implements IModel {
     return true;
   }
 
-  onCreate(data: any): void {
-  }
+  onCreate(data: any): void {}
 
-  onDelete(data: any): void {
-  }
+  onDelete(data: any): void {}
 
-  onSave(data: any): void {
-  }
+  onSave(data: any): void {}
 
-  onUpdate(data: any): void {
-  }
-
+  onUpdate(data: any): void {}
 }

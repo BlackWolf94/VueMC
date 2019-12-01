@@ -4,14 +4,14 @@
  */
 import { TApiConf } from './TApiConf';
 
-export type TMutation = (value: any) => any | Object | Array<any> | string | number | null;
+export type TMutation<T> = (value?: any) => T ;
 
 export type TMutations<T> = {
-  [P in keyof T]?: TMutation;
+  [P in keyof T]?: T[P] | TMutation<T[P]>;
 }
 
 export type TObject = {
-  [key: string]: any
+  [key: string]: any;
 }
 
 
@@ -19,9 +19,9 @@ export type TObject = {
 export interface IModel {
   mutations(): TMutations<IModel>;
   mutateBeforeSave(): TMutations<TObject> | null;
-  prepareForSave(): TMutations<TObject>;
   api(): TApiConf;
-  fetchData(data?: TObject): this;
+  set(data?: TObject): this;
+  default(): Partial<IModel>
 
   save(): Promise<boolean>
   update(): Promise<boolean>

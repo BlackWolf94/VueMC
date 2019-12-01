@@ -3,18 +3,18 @@
  * @email zidadindimon@gmail.com
  * @created_at 11/25/19
  */
-import { IModel, TMutation, TMutations, TObject } from './types/IModel';
+import { IModel, TMutations, TObject } from './types/IModel';
 import { TApiConf } from './types/TApiConf';
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
 import { ErrorHandler } from './ErrorHandler';
-import { ICollection } from './types/ICollection';
 
 export class BaseModel implements IModel {
-  protected $collection: ICollection<IModel> = null;
-  constructor(data: TObject) {
-    this.fetchData(data);
+  constructor(data: TObject = {}) {
+    this.set(data);
   }
+
+  error: any;
 
   api(): TApiConf {
     return {
@@ -33,14 +33,21 @@ export class BaseModel implements IModel {
     };
   }
 
-  private mutation(key: string, mutation: TMutation): any {
+  default(): Partial<BaseModel> {
+    return {};
+  }
+
+  private mutation(key: string, mutation: any): any {
     return TypeHelper.isFunction(mutation) ? mutation.call(this, this[key]) : mutation;
   }
 
-  fetchData(data?: TObject): this {
-    if (data)
+  set(data?: TObject): this {
+
+    if (data) {
+      data = { ...this.default(), ...data };
       Object.keys(data)
         .forEach(key => (Vue.set(this, key, data[key])));
+    }
 
     const mutations = this.mutations();
 
@@ -57,10 +64,11 @@ export class BaseModel implements IModel {
     return null;
   }
 
-  prepareForSave(): TObject {
+  protected prepareForSave(): TObject {
     const mutations = this.mutateBeforeSave();
-    if (!mutations)
+    if (!mutations) {
       return Object.values(this);
+    }
 
     const data: TObject = {};
     const mutate = (key: string) => (data[key] = this.mutation(key, mutations[key]));
@@ -104,8 +112,4 @@ export class BaseModel implements IModel {
   onUpdate(data: any): void {
   }
 
-  setCollection(collection: ICollection<BaseModel>): this{
-    this.$collection = collection;
-    return this
-  }
 }

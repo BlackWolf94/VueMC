@@ -14,8 +14,11 @@ export type TApiConf = {
 export type TFetchData<M> = {
   content: M[];
   pages: number;
-  page: number;
-  size: number;
+  page?: number;
+  size?: number;
+  total?: number;
 }
 
-export type TFetch<M>  = (filter?: TCollectionFilter) => Promise<TFetchData<M>>;
+export type TApiCollectionConf<M> = {
+  fetch(filter?: TCollectionFilter):Promise<TFetchData<M>>;
+}

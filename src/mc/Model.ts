@@ -3,8 +3,8 @@
  * @email zidadindimon@gmail.com
  * @created_at 11/25/19
  */
-import { IModel, TMutations, TObject } from './types/IModel';
-import { TApiConf } from './types/TApiConf';
+import { IModel, TMutations, TObject } from '../types/IModel';
+import { TApiConf } from '../types/TApiConf';
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
 import { ErrorHandler } from './ErrorHandler';

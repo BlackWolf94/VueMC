@@ -12,7 +12,6 @@ import TypeHelper from '@zidadindimon/js-typehelper';
 import { TApiCollectionConf } from '../types/TApiConf';
 
 export class Collection<M extends Model, F = TObject> implements ICollection<M> {
-
   get pageSize(): number {
     return this.models.length;
   }
@@ -33,8 +32,7 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
   protected timerId: any;
 
   constructor() {
-    this.clear()
-      .srrInit();
+    this.clear().srrInit();
   }
 
   clear(): this {
@@ -85,11 +83,15 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
   }
 
   setFilters(filters: TObject = {}): this {
-    Vue.set(this, 'filters', this.mutateFilter({
-      ...this.defFilter(),
-      ...this.filters || {},
-      ...filters
-    }));
+    Vue.set(
+      this,
+      'filters',
+      this.mutateFilter({
+        ...this.defFilter(),
+        ...(this.filters || {}),
+        ...filters,
+      }),
+    );
     return this;
   }
 
@@ -97,7 +99,7 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
     return {
       fetch() {
         throw new Error('Fetch api method not configure');
-      }
+      },
     };
   }
 
@@ -120,7 +122,7 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
   }
 
   srrInit() {
-   return this;
+    return this;
   }
 
   protected ssrKey(): string {
@@ -139,7 +141,7 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
   }
 
   protected removeItem(el: number | M) {
-    const index: number = TypeHelper.isNumber(el) ? el as number : this.models.findIndex((model) => model === el);
+    const index: number = TypeHelper.isNumber(el) ? (el as number) : this.models.findIndex(model => model === el);
     this.models.splice(index, 1);
     return this;
   }
@@ -147,7 +149,7 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
   protected defFilter(): TCollectionFilter<F> {
     return {
       page: 0,
-      size: 50
+      size: 50,
     };
   }
 
@@ -169,11 +171,9 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
     return this;
   }
 
-  protected beforeFetch() {
-  }
+  protected beforeFetch() {}
 
-  protected afterFetch() {
-  }
+  protected afterFetch() {}
 
   private addItem(item: TObject | M) {
     this.models.push(this.initModel(item));

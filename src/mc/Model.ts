@@ -10,7 +10,6 @@ import TypeHelper from '@zidadindimon/js-typehelper';
 import { ErrorHandler } from './ErrorHandler';
 
 export class Model implements IModel {
-
   static async factoryFetch<T extends Model>(modelClass: typeof Model, filter?: any): Promise<T> {
     return new modelClass(await modelClass.fetchApi(filter)) as T;
   }
@@ -46,11 +45,9 @@ export class Model implements IModel {
   }
 
   set(data?: TObject): this {
-
     if (data) {
       data = { ...this.default(), ...data };
-      Object.keys(data)
-        .forEach((key) => (Vue.set(this, key, data[key])));
+      Object.keys(data).forEach(key => Vue.set(this, key, data[key]));
     }
 
     const mutations = this.mutations();
@@ -93,17 +90,13 @@ export class Model implements IModel {
     return true;
   }
 
-  onCreate(data: any): void {
-  }
+  onCreate(data: any): void {}
 
-  onDelete(data: any): void {
-  }
+  onDelete(data: any): void {}
 
-  onSave(data: any): void {
-  }
+  onSave(data: any): void {}
 
-  onUpdate(data: any): void {
-  }
+  onUpdate(data: any): void {}
 
   protected prepareForSave(): TObject {
     const mutations = this.mutateBeforeSave();
@@ -118,7 +111,6 @@ export class Model implements IModel {
   }
 
   private mutation(key: string, mutation: any): any {
-    return TypeHelper.isFunction(mutation) ? mutation.call(this, this[key] ) : mutation;
+    return TypeHelper.isFunction(mutation) ? mutation.call(this, this[key]) : mutation;
   }
-
 }

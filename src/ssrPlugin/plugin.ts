@@ -36,9 +36,8 @@ export const ssrMCPlugin: PluginObject<any> = {
         const key = `${modelClass.name}:${JSON.stringify(filters)}`;
         // @ts-ignore
         localState.models[key] = await modelClass.fetchApi(filters);
-        return  new modelClass(localState.models[key]);
+        return new modelClass(localState.models[key]);
       };
-
     };
 
     Vue.prototype.$mcClientSSR = function(key: string) {
@@ -74,7 +73,7 @@ export const ssrMCPlugin: PluginObject<any> = {
         return this;
       };
 
-      const factoryFetch =  Model.factoryFetch;
+      const factoryFetch = Model.factoryFetch;
 
       // @ts-ignore
       Model.factoryFetch = async function(modelClass: typeof Model, filters: any) {
@@ -85,19 +84,14 @@ export const ssrMCPlugin: PluginObject<any> = {
         }
 
         delete localState.models[key];
-        return  new modelClass(data);
+        return new modelClass(data);
       };
     };
-
 
     Vue.prototype.$mcServerSSRContext = function(): string {
       const context = JSON.stringify(state.get(this));
       state.delete(this);
       return context;
     };
-
-
-
-
-  }
+  },
 };

@@ -4,7 +4,7 @@
  */
 import { TApiConf } from './TApiConf';
 
-export type TMutation<T> = (value?: any) => T;
+export type TMutation<T> = (value?: any) => T ;
 
 export type TMutations<T> = {
   [P in keyof T]?: T[P] | TMutation<T[P]>;
@@ -13,6 +13,8 @@ export type TMutations<T> = {
 export type TObject = {
   [key: string]: any;
 };
+
+
 
 export interface IModel {
   mutations(): TMutations<IModel>;

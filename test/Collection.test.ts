@@ -3,24 +3,23 @@
  * @created_at 11/30/19
  */
 /* tslint:disable:max-classes-per-file */
-import { BaseModel } from '../src';
-import { BaseCollection } from '../src';
 import { TApiCollectionConf, TFetchData } from '../src/types/TApiConf';
 import { TCollectionFilter } from '../src/types/ICollection';
+import { Collection, Model } from '../src';
 
-class Model extends BaseModel {
+class TestModel extends Model {
   id: number;
   name: string;
 }
 
-class Collection extends BaseCollection<Model> {
-  model(): typeof Model{
-    return Model;
+class TestCollection extends Collection<TestModel> {
+  model(): typeof TestModel{
+    return TestModel;
   }
 
-  api(): TApiCollectionConf<Model> {
+  api(): TApiCollectionConf<TestModel> {
     return {
-      async fetch(filter?: TCollectionFilter): Promise<TFetchData<Model>> {
+      async fetch(filter?: TCollectionFilter): Promise<TFetchData<TestModel>> {
         return  {
           page: filter.page,
           pages: 10,
@@ -29,7 +28,7 @@ class Collection extends BaseCollection<Model> {
             .map( (item, index) => ({
               name:`Test ${filter.page}:${index}`,
               id: index + (filter.page * filter.size || 10)
-            }as Model))
+            }as TestModel))
         }
       }
     };
@@ -44,7 +43,7 @@ class Collection extends BaseCollection<Model> {
 
 
 describe( 'Collection', () =>{
-  const collection = new Collection();
+  const collection = new TestCollection();
 
   it('Init', () => {
     collection.add(Array(5)

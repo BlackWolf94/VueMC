@@ -1,2 +1,2 @@
-export { BaseModel } from './Model';
-export { BaseCollection } from './Collection';
+export { Model } from './mc/Model';
+export { Collection } from './mc/Collection';

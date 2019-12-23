@@ -9,7 +9,7 @@ export type TApiConf = {
   update(...params: any[]): any;
   delete(...params: any[]): any;
   create(...params: any[]): any;
-}
+};
 
 export type TFetchData<M> = {
   content: M[];
@@ -17,8 +17,8 @@ export type TFetchData<M> = {
   page?: number;
   size?: number;
   total?: number;
-}
+};
 
 export type TApiCollectionConf<M> = {
-  fetch(filter?: TCollectionFilter):Promise<TFetchData<M>>;
-}
+  fetch(filter?: TCollectionFilter): Promise<TFetchData<M>>;
+};

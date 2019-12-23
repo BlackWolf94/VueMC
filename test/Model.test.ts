@@ -3,30 +3,30 @@
  * @created_at 11/30/19
  */
 /* tslint:disable:max-classes-per-file */
-import { BaseModel } from '../src';
 import { TMutations, TObject } from '../src/types/IModel';
 import { TApiConf } from '../src/types/TApiConf';
+import { Model } from '../src';
 
 describe('Model', () => {
   it('Initialize', () => {
-    class Model extends BaseModel {
+    class TestModel extends Model {
       id: number;
       name: string;
     }
 
-    const model = new Model({ id: 1, name: 'Test' });
+    const model = new TestModel({ id: 1, name: 'Test' });
 
     expect(model.id).toBe(1);
     expect(model.name).toBe('Test');
   });
 
   it('Apply default', () => {
-    class Model extends BaseModel {
+    class TestModel extends Model {
       id: number;
       name: string;
       secondName: string;
 
-      default(): Partial<Model> {
+      default(): Partial<TestModel> {
         return {
           secondName: 'Test second name',
           id: null,
@@ -34,7 +34,7 @@ describe('Model', () => {
       }
     }
 
-    const model = new Model({ id: 1, name: 'Test' });
+    const model = new TestModel({ id: 1, name: 'Test' });
 
     expect(model.id).toBe(1);
     expect(model.name).toBe('Test');
@@ -42,14 +42,14 @@ describe('Model', () => {
   });
 
   it('Apply mutation', () => {
-    class Model extends BaseModel {
+    class TestModel extends Model {
       id: number;
       firsName: string;
       secondName: string;
       fullName: string;
       uuid: string;
 
-      mutations(): TMutations<Model> {
+      mutations(): TMutations<TestModel> {
         return {
           fullName: `${this.firsName} ${this.secondName}`,
           uuid: () => `--- ${this.id}`,
@@ -57,15 +57,15 @@ describe('Model', () => {
       }
     }
 
-    const model = new Model({ id: 1, firsName: 'Test', secondName: 'user' });
+    const model = new TestModel({ id: 1, firsName: 'Test', secondName: 'user' });
     expect(model.id).toBe(1);
     expect(model.fullName).toBe('Test user');
     expect(model.uuid).toBe('--- 1');
   });
 
   it('Error Handler', async () => {
-    class Model extends BaseModel {}
-    const model = new Model();
+    class TestModel extends Model {}
+    const model = new TestModel();
     try {
       await model.save();
     } catch (e) {
@@ -74,7 +74,7 @@ describe('Model', () => {
   });
 
   it('Save', async () => {
-    class Model extends BaseModel {
+    class TestModel extends Model {
       id: number;
       name: string;
 
@@ -105,7 +105,7 @@ describe('Model', () => {
 
     }
 
-    const model = new Model({
+    const model = new TestModel({
       name: 'Test',
       id: 1
     });

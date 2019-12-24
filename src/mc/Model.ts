@@ -3,13 +3,13 @@
  * @email zidadindimon@gmail.com
  * @created_at 11/25/19
  */
-import { IModel, TMutations, TObject } from '../types/IModel';
+import { IModelD, TMutations, TObject } from '../types/IModel';
 import { TApiConf } from '../types/TApiConf';
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
 import { ErrorHandler } from './ErrorHandler';
 
-export class Model implements IModel {
+export class Model implements IModelD {
   static async factoryFetch<T extends Model>(modelClass: typeof Model, filter?: any): Promise<T> {
     return new modelClass(await modelClass.fetchApi(filter)) as T;
   }
@@ -58,7 +58,7 @@ export class Model implements IModel {
     return this;
   }
 
-  mutations(): TMutations<IModel> {
+  mutations(): TMutations<IModelD> {
     return {};
   }
 

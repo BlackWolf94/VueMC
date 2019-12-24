@@ -1,5 +1,4 @@
 import { TObject } from './IModel';
-import { Model } from '../Model';
 
 /**
  * @author Dmytro Zataidukh

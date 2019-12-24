@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es5",
     "module": "commonjs",
     "outDir": "./lib",
-    "typeRoots": ["node_modules/@types"],
     "noImplicitAny": false,
     "lib": [
       "dom",
@@ -19,7 +18,7 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "baseUrl": ".",
     "importHelpers": true,
     "moduleResolution": "node",

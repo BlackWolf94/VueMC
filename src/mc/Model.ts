@@ -6,7 +6,7 @@
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
 import { ErrorHandler } from './ErrorHandler';
-import { IModel, TMutations, TObject } from '@declaration/IModel';
+import { IModel, TMutations, TObject, TRules } from '@declaration/IModel';
 import { TApiConf } from '@declaration/TApiConf';
 
 export class Model implements IModel {
@@ -58,7 +58,7 @@ export class Model implements IModel {
     return this;
   }
 
-  mutations(): TMutations<IModel> {
+  mutations(): TMutations<Model> {
     return {};
   }
 
@@ -113,4 +113,15 @@ export class Model implements IModel {
   private mutation(key: string, mutation: any): any {
     return TypeHelper.isFunction(mutation) ? mutation.call(this, this[key]) : mutation;
   }
+
+
+
+  validate(): boolean {
+    return false;
+  }
+
+  get rules(): TRules<Model> {
+   return {}
+  };
+
 }

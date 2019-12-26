@@ -37,7 +37,7 @@
     "tslint-config-prettier": "^1.18.0",
     "typedoc": "^0.13.0",
     "typedoc-markdown-theme": "0.0.4",
-    "typescript": "^3.7.2"
+    "typescript": "^3.7.4"
   },
   "dependencies": {
     "@types/node": "^13.1.0",

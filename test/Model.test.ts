@@ -3,7 +3,7 @@
  * @created_at 11/30/19
  */
 /* tslint:disable:max-classes-per-file */
-import { Model, TApiConf, TMutations, TObject } from '../src';
+import { Model, TApiConf, TMutations, TObject, TRules } from '../src';
 
 describe('Model', () => {
   it('Initialize', () => {
@@ -110,5 +110,26 @@ describe('Model', () => {
     expect(await model.save()).toBe(true);
 
   });
+
+  it('Validation', async () => {
+    class TestModel extends Model {
+      id: number;
+      name: string;
+
+
+      get rules(): TRules<TestModel>   {
+        return {
+          id: [
+            v => !!v || 'Id is required!',
+          ],
+          name: [
+            v => !!v || 'Id is required!',
+            v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+          ]
+        };
+      }
+    }
+  });
+
 
 });

@@ -116,13 +116,18 @@ describe('Model', () => {
   it('Validation', async () => {
     class TestModel extends Model {
       id: number;
-      name: string;
+      firstName: string;
+      secondName: string;
+
+      get fullName(): string {
+        return `${this.firstName} ${this.secondName || ''}`;
+      }
 
       readonly rules: TRules<TestModel> = {
         id: [
           v => !!v || 'Id is required!',
         ],
-        name: [
+        fullName: [
           v => !!v || 'Id is required!',
           v => (v && v.length > 5) || 'Name must be more than 10 characters',
         ],
@@ -130,21 +135,21 @@ describe('Model', () => {
     }
 
     const model = new TestModel({
-      name: 'Test',
+      firstName: 'Test',
       id: null,
     });
 
     expect(model.hasErrors()).toBe(true);
 
     expect( model.errors.id).toEqual(['Id is required!']);
-    expect( model.errors.name).toEqual(['Name must be more than 10 characters']);
+    expect( model.errors.fullName).toEqual(['Name must be more than 10 characters']);
 
     model.id = 1;
 
     expect(model.hasErrors()).toBe(true);
-    expect( model.errors.name).toEqual(['Name must be more than 10 characters']);
+    expect( model.errors.fullName).toEqual(['Name must be more than 10 characters']);
 
-    model.name = '1111111111';
+    model.secondName = 'User---';
     expect(model.hasErrors()).toBe(false);
     expect( model.errors).toEqual({});
 

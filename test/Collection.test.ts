@@ -3,9 +3,7 @@
  * @created_at 11/30/19
  */
 /* tslint:disable:max-classes-per-file */
-import { TApiCollectionConf, TFetchData } from '../src';
-import { TCollectionFilter } from '../src';
-import { Collection, Model } from '../src';
+import { Collection, Model, TApiCollectionConf, TCollectionFilter, TFetchData } from '../src';
 
 class TestModel extends Model {
   id: number;

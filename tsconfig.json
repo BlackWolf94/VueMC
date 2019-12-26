@@ -13,7 +13,7 @@
       "scripthost",
       "esnext"
     ],
-    "strict": true,
+    "strict": false,
     "declaration": true,
     "declarationDir": "types",
     "removeComments": true,

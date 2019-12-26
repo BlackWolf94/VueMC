@@ -117,8 +117,7 @@ describe('Model', () => {
       name: string;
 
 
-      get rules(): TRules<TestModel>   {
-        return {
+      readonly rules: TRules<TestModel> = {
           id: [
             v => !!v || 'Id is required!',
           ],
@@ -127,7 +126,6 @@ describe('Model', () => {
             v => (v && v.length <= 10) || 'Name must be less than 10 characters',
           ]
         };
-      }
     }
   });
 

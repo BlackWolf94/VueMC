@@ -120,8 +120,6 @@ export class Model implements IModel {
     return false;
   }
 
-  get rules(): TRules<Model> {
-   return {}
-  };
+  readonly rules: TRules<Model> = {};
 
 }

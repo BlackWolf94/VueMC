@@ -1,9 +1,9 @@
-import { TObject } from './IModel';
-
 /**
  * @author Dmytro Zataidukh
  * @created_at 11/25/19
  */
+
+import { TObject } from './IModel';
 
 export interface ICollection<M> {
   first(): M;

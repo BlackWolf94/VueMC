@@ -14,12 +14,12 @@ export type TObject = {
   [key: string]: any;
 };
 
-export interface IModelD {
-  mutations(): TMutations<IModelD>;
+export interface IModel {
+  mutations(): TMutations<IModel>;
   mutateBeforeSave(): TMutations<TObject> | null;
   api(): TApiConf;
   set(data?: TObject): this;
-  default(): Partial<IModelD>;
+  default(): Partial<IModel>;
 
   save(): Promise<boolean>;
   update(): Promise<boolean>;

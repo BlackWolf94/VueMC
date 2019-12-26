@@ -6,22 +6,24 @@
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
 import { ErrorHandler } from './ErrorHandler';
-import { IModel, TMutations, TObject, TRules } from '@declaration/IModel';
+import { IModel, TMutations, TObject, TRule, TRules } from '@declaration/IModel';
 import { TApiConf } from '@declaration/TApiConf';
 
 export class Model implements IModel {
   static async factoryFetch<T extends Model>(modelClass: typeof Model, filter?: any): Promise<T> {
-    return new modelClass(await modelClass.fetchApi(filter)) as T;
+    return new modelClass(await modelClass.fetchApi(filter), false) as T;
   }
 
   protected static fetchApi(filter: any): Promise<TObject> {
     throw new Error(`${this.name} fetchApi not configure`);
   }
 
-  error: any;
-  constructor(data: TObject = {}) {
+  constructor(data: TObject = {}, private _isNew: boolean = true) {
     this.set(data);
   }
+
+  private _cacheErrors: TObject<TObject<string[]>> = {};
+  private _hasError: boolean;
 
   api(): TApiConf {
     return {
@@ -34,12 +36,10 @@ export class Model implements IModel {
       delete(): any {
         throw new Error('Delete api method not configure');
       },
-      create(): any {
-        throw new Error('Create api method not configure');
-      },
     };
   }
 
+  // @ts-ignore
   default(): Partial<Model> {
     return {};
   }
@@ -58,6 +58,7 @@ export class Model implements IModel {
     return this;
   }
 
+  // @ts-ignore
   mutations(): TMutations<Model> {
     return {};
   }
@@ -66,11 +67,6 @@ export class Model implements IModel {
     return null;
   }
 
-  @ErrorHandler()
-  async create(): Promise<boolean> {
-    this.onCreate(await this.api().create(this.prepareForSave()));
-    return true;
-  }
 
   @ErrorHandler()
   async delete(): Promise<boolean> {
@@ -80,23 +76,15 @@ export class Model implements IModel {
 
   @ErrorHandler()
   async save(): Promise<boolean> {
-    this.onSave(await this.api().save(this.prepareForSave()));
+    const method = this._isNew ? 'save': 'update';
+    this.onSave(await this.api()[method](this.prepareForSave()));
+    this._isNew = true;
     return true;
   }
-
-  @ErrorHandler()
-  async update(): Promise<boolean> {
-    this.onSave(await this.api().update(this.prepareForSave()));
-    return true;
-  }
-
-  onCreate(data: any): void {}
 
   onDelete(data: any): void {}
 
   onSave(data: any): void {}
-
-  onUpdate(data: any): void {}
 
   protected prepareForSave(): TObject {
     const mutations = this.mutateBeforeSave();
@@ -114,12 +102,38 @@ export class Model implements IModel {
     return TypeHelper.isFunction(mutation) ? mutation.call(this, this[key]) : mutation;
   }
 
+  get errors(): TObject<string[]>{
+    const key = JSON.stringify(this);
+    if(this._cacheErrors[key] !== undefined) {
+        return this._cacheErrors[key];
+    }
+    this._cacheErrors = {};
 
+    const errors: TObject<string[]> = {};
 
-  validate(): boolean {
-    return false;
+    this._hasError = false;
+
+    Object.keys(this.rules)
+      .forEach( key => {
+        const rules: TRule<any>[] = this.rules[key];
+        errors[key]= rules.map( rule => rule.call(this, this[key]))
+          .filter( error => TypeHelper.isString(error));
+
+        this._hasError = this._hasError || !!errors[key].length
+
+        if(!errors[key].length) {
+          delete errors[key]
+        }
+      });
+    this._cacheErrors[key] = errors;
+    return errors
   }
 
+  hasErrors(): boolean {
+    return this.errors && this._hasError
+  }
+
+  // @ts-ignore
   readonly rules: TRules<Model> = {};
 
 }

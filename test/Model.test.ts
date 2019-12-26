@@ -62,7 +62,9 @@ describe('Model', () => {
   });
 
   it('Error Handler', async () => {
-    class TestModel extends Model {}
+    class TestModel extends Model {
+    }
+
     const model = new TestModel();
     try {
       await model.save();
@@ -76,22 +78,22 @@ describe('Model', () => {
       id: number;
       name: string;
 
-      api(): TApiConf{
-        return{
+      api(): TApiConf {
+        return {
           ...super.api(),
           save(data) {
             return data;
-          }
-        }
+          },
+        };
       }
 
-      mutateBeforeSave(): TObject{
+      mutateBeforeSave(): TObject {
         return {
           name: {
             first: this.name,
-            second: this.name
+            second: this.name,
           },
-          uuid: () => `--- ${this.id}`
+          uuid: () => `--- ${this.id}`,
         };
       }
 
@@ -105,7 +107,7 @@ describe('Model', () => {
 
     const model = new TestModel({
       name: 'Test',
-      id: 1
+      id: 1,
     });
     expect(await model.save()).toBe(true);
 
@@ -116,17 +118,36 @@ describe('Model', () => {
       id: number;
       name: string;
 
-
       readonly rules: TRules<TestModel> = {
-          id: [
-            v => !!v || 'Id is required!',
-          ],
-          name: [
-            v => !!v || 'Id is required!',
-            v => (v && v.length <= 10) || 'Name must be less than 10 characters',
-          ]
-        };
+        id: [
+          v => !!v || 'Id is required!',
+        ],
+        name: [
+          v => !!v || 'Id is required!',
+          v => (v && v.length > 5) || 'Name must be more than 10 characters',
+        ],
+      };
     }
+
+    const model = new TestModel({
+      name: 'Test',
+      id: null,
+    });
+
+    expect(model.hasErrors()).toBe(true);
+
+    expect( model.errors.id).toEqual(['Id is required!']);
+    expect( model.errors.name).toEqual(['Name must be more than 10 characters']);
+
+    model.id = 1;
+
+    expect(model.hasErrors()).toBe(true);
+    expect( model.errors.name).toEqual(['Name must be more than 10 characters']);
+
+    model.name = '1111111111';
+    expect(model.hasErrors()).toBe(false);
+    expect( model.errors).toEqual({});
+
   });
 
 

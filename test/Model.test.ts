@@ -3,8 +3,8 @@
  * @created_at 11/30/19
  */
 /* tslint:disable:max-classes-per-file */
-import { TMutations, TObject } from '../src/types/IModel';
-import { TApiConf } from '../src/types/TApiConf';
+import { TMutations, TObject } from '../src';
+import { TApiConf } from '../src';
 import { Model } from '../src';
 
 describe('Model', () => {

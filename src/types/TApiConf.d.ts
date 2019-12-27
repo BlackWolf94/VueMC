@@ -8,7 +8,6 @@ export type TApiConf = {
   save(...params: any[]): any;
   update(...params: any[]): any;
   delete(...params: any[]): any;
-  create(...params: any[]): any;
 };
 
 export type TFetchData<M> = {

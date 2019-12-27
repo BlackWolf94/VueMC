@@ -4,12 +4,12 @@
  * @created_at 11/26/19
  */
 
-import { TObject } from '../types/IModel';
-import { ICollection, TCollectionFilter } from '../types/ICollection';
 import Vue from 'vue';
 import { Model } from './Model';
 import TypeHelper from '@zidadindimon/js-typehelper';
-import { TApiCollectionConf } from '../types/TApiConf';
+import { TObject } from '@declaration/IModel';
+import { ICollection, TCollectionFilter } from '@declaration/ICollection';
+import { TApiCollectionConf } from '@declaration/TApiConf';
 
 export class Collection<M extends Model, F = TObject> implements ICollection<M> {
   get pageSize(): number {

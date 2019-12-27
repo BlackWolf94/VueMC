@@ -3,9 +3,7 @@
  * @created_at 11/30/19
  */
 /* tslint:disable:max-classes-per-file */
-import { TMutations, TObject } from '../src/types/IModel';
-import { TApiConf } from '../src/types/TApiConf';
-import { Model } from '../src';
+import { Model, TApiConf, TMutations, TObject, TRules } from '../src';
 
 describe('Model', () => {
   it('Initialize', () => {
@@ -64,7 +62,9 @@ describe('Model', () => {
   });
 
   it('Error Handler', async () => {
-    class TestModel extends Model {}
+    class TestModel extends Model {
+    }
+
     const model = new TestModel();
     try {
       await model.save();
@@ -78,22 +78,22 @@ describe('Model', () => {
       id: number;
       name: string;
 
-      api(): TApiConf{
-        return{
+      api(): TApiConf {
+        return {
           ...super.api(),
           save(data) {
             return data;
-          }
-        }
+          },
+        };
       }
 
-      mutateBeforeSave(): TObject{
+      mutateBeforeSave(): TObject {
         return {
           name: {
             first: this.name,
-            second: this.name
+            second: this.name,
           },
-          uuid: () => `--- ${this.id}`
+          uuid: () => `--- ${this.id}`,
         };
       }
 
@@ -107,10 +107,53 @@ describe('Model', () => {
 
     const model = new TestModel({
       name: 'Test',
-      id: 1
+      id: 1,
     });
     expect(await model.save()).toBe(true);
 
   });
+
+  it('Validation', async () => {
+    class TestModel extends Model {
+      id: number;
+      firstName: string;
+      secondName: string;
+
+      get fullName(): string {
+        return `${this.firstName} ${this.secondName || ''}`;
+      }
+
+      readonly rules: TRules<TestModel> = {
+        id: [
+          v => !!v || 'Id is required!',
+        ],
+        fullName: [
+          v => !!v || 'Id is required!',
+          v => (v && v.length > 5) || 'Name must be more than 10 characters',
+        ],
+      };
+    }
+
+    const model = new TestModel({
+      firstName: 'Test',
+      id: null,
+    });
+
+    expect(model.hasErrors()).toBe(true);
+
+    expect( model.errors.id).toEqual(['Id is required!']);
+    expect( model.errors.fullName).toEqual(['Name must be more than 10 characters']);
+
+    model.id = 1;
+
+    expect(model.hasErrors()).toBe(true);
+    expect( model.errors.fullName).toEqual(['Name must be more than 10 characters']);
+
+    model.secondName = 'User---';
+    expect(model.hasErrors()).toBe(false);
+    expect( model.errors).toEqual({});
+
+  });
+
 
 });

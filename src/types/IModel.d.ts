@@ -10,24 +10,29 @@ export type TMutations<T> = {
   [P in keyof T]?: T[P] | TMutation<T[P]>;
 };
 
-export type TObject = {
-  [key: string]: any;
+export type TObject<T = any> = {
+  [key: string]: T;
+};
+
+export type TRule<T> = (val: T) => boolean | string;
+
+export type TRules<T = IModel> = {
+  [P in keyof T]?: TRule<T[P]>[];
 };
 
 export interface IModel {
-  mutations(): TMutations<IModel>;
+  readonly rules: TRules<IModel>;
   mutateBeforeSave(): TMutations<TObject> | null;
   api(): TApiConf;
   set(data?: TObject): this;
   default(): Partial<IModel>;
+  mutations(): TMutations<IModel>;
 
   save(): Promise<boolean>;
-  update(): Promise<boolean>;
   delete(): Promise<boolean>;
-  create(): Promise<boolean>;
 
   onSave(data: any): void;
   onCreate(data: any): void;
-  onUpdate(data: any): void;
-  onDelete(data: any): void;
+  hasErrors(): boolean;
+  readonly errors: TObject<string[]>;
 }

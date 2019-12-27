@@ -13,7 +13,7 @@
       "scripthost",
       "esnext"
     ],
-    "strict": true,
+    "strict": false,
     "declaration": true,
     "declarationDir": "types",
     "removeComments": true,
@@ -27,12 +27,20 @@
     "strictNullChecks": false,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "@declaration/*": [
+        "src/types/*"
+      ],
+      "@mc/*": [
+        "src/mc/*"
+      ]
+    }
   },
   "types": [
     "core-js",
     "./node_modules/@types"
   ],
-  "include": ["src"],
+  "include": ["src/**.*"],
   "exclude": ["node_modules", "test"]
 }

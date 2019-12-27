@@ -67,7 +67,6 @@ export class Model implements IModel {
     return null;
   }
 
-
   @ErrorHandler()
   async delete(): Promise<boolean> {
     this.onDelete(await this.api().delete());
@@ -76,7 +75,7 @@ export class Model implements IModel {
 
   @ErrorHandler()
   async save(): Promise<boolean> {
-    const method = this._isNew ? 'save': 'update';
+    const method = this._isNew ? 'save' : 'update';
     this.onSave(await this.api()[method](this.prepareForSave()));
     this._isNew = true;
     return true;
@@ -102,10 +101,10 @@ export class Model implements IModel {
     return TypeHelper.isFunction(mutation) ? mutation.call(this, this[key]) : mutation;
   }
 
-  get errors(): TObject<string[]>{
+  get errors(): TObject<string[]> {
     const key = JSON.stringify(this);
-    if(this._cacheErrors[key] !== undefined) {
-        return this._cacheErrors[key];
+    if (this._cacheErrors[key] !== undefined) {
+      return this._cacheErrors[key];
     }
     this._cacheErrors = {};
 
@@ -113,27 +112,24 @@ export class Model implements IModel {
 
     this._hasError = false;
 
-    Object.keys(this.rules)
-      .forEach( key => {
-        const rules: TRule<any>[] = this.rules[key];
-        errors[key]= rules.map( rule => rule.call(this, this[key]))
-          .filter( error => TypeHelper.isString(error));
+    Object.keys(this.rules).forEach(key => {
+      const rules: TRule<any>[] = this.rules[key];
+      errors[key] = rules.map(rule => rule.call(this, this[key])).filter(error => TypeHelper.isString(error));
 
-        this._hasError = this._hasError || !!errors[key].length
+      this._hasError = this._hasError || !!errors[key].length;
 
-        if(!errors[key].length) {
-          delete errors[key]
-        }
-      });
+      if (!errors[key].length) {
+        delete errors[key];
+      }
+    });
     this._cacheErrors[key] = errors;
-    return errors
+    return errors;
   }
 
   hasErrors(): boolean {
-    return this.errors && this._hasError
+    return this.errors && this._hasError;
   }
 
   // @ts-ignore
   readonly rules: TRules<Model> = {};
-
 }

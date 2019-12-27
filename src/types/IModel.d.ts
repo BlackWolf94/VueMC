@@ -10,16 +10,15 @@ export type TMutations<T> = {
   [P in keyof T]?: T[P] | TMutation<T[P]>;
 };
 
-export type TObject<T= any> = {
+export type TObject<T = any> = {
   [key: string]: T;
 };
 
-export type TRule<T> = (val: T) => boolean | string
+export type TRule<T> = (val: T) => boolean | string;
 
 export type TRules<T = IModel> = {
-  [P in keyof T]?: TRule<T[P]>[]
-}
-
+  [P in keyof T]?: TRule<T[P]>[];
+};
 
 export interface IModel {
   readonly rules: TRules<IModel>;
@@ -35,5 +34,5 @@ export interface IModel {
   onSave(data: any): void;
   onCreate(data: any): void;
   hasErrors(): boolean;
-  readonly errors: TObject<string[]>
+  readonly errors: TObject<string[]>;
 }

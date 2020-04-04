@@ -23,6 +23,8 @@
     "type-literal-delimiter": true,
     "prefer-method-signature": true,
     "class-name": true,
+    "no-construct": true,
+    "no-parameter-properties": true,
     "arrow-return-shorthand": [
       true,
       "multiline"

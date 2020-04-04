@@ -1,6 +1,7 @@
 import Vue, { PluginObject } from 'vue';
-import { TObject } from '../types/IModel';
-import { Collection, Model } from '..';
+import { Collection } from './Collection';
+import { TObject } from '@/types';
+import { Model } from './Model';
 
 /**
  * @author D

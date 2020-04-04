@@ -7,9 +7,7 @@
 import Vue from 'vue';
 import { Model } from './Model';
 import TypeHelper from '@zidadindimon/js-typehelper';
-import { TObject } from '@declaration/IModel';
-import { ICollection, TCollectionFilter } from '@declaration/ICollection';
-import { TApiCollectionConf } from '@declaration/TApiConf';
+import { ICollection, TApiCollectionConf, TCollectionFilter, TObject } from '@/types';
 
 export class Collection<M extends Model, F = TObject> implements ICollection<M> {
   get pageSize(): number {

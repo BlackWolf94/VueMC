@@ -5,6 +5,7 @@
 import { TCollectionFilter } from './ICollection';
 
 export type TApiConf = {
+  fetch(...params: any[]): any;
   save(...params: any[]): any;
   update(...params: any[]): any;
   delete(...params: any[]): any;

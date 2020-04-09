@@ -1,11 +1,11 @@
-* Getting started
-  * [Introduction](introduction.md)
-  * [Installation](instalation.md)
+* Introduction
+  * [Getting started](README.md)
   
 * Model
-  * [Creating instances](model/initialize.md)
-  * [Default value](model/defaults.md)
-  * [Mutations](model/mutations.md)
+  * **Simply usage**  
+    * [Initialization](model/initialize.md?id=create-instance)
+    * [Default value](model/initialize.md?id=default-value)
+    * [Mutations](model/initialize.md?id=mutations)
   * [Validation](model/validations.md)
   * [Api](model/api.md)
 

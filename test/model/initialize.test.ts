@@ -31,8 +31,19 @@ class TestModel extends Model<TModelInitProps> {
 
 describe('Model: initialize', () => {
   const model = new TestModel();
-  model.init({ secondName: 'Second name', id: 5 });
 
+  it('init', () => {
+
+    const emptyModel = new class extends Model {
+      id: number;
+      name: string = 'Test';
+    };
+
+    expect(emptyModel.id).toBeUndefined();
+    expect(emptyModel.name).toBe('Test');
+  });
+
+  model.init({ secondName: 'Second name', id: 5 });
 
   it('default value', () => {
     expect(model.name).toBe('Test');
@@ -42,6 +53,7 @@ describe('Model: initialize', () => {
   it('mutations value', () => {
     expect(model.id).toBe(500);
     expect(model.uuid).toBe('uuid: 500');
+    console.error(model)
   });
 
   it('computed value', () => {

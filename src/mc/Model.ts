@@ -21,6 +21,10 @@ export class Model<D = TObject> implements IModel<D> {
   private _attrsErrors: TObject<string> = {};
   private _error: string = null;
 
+  constructor() {
+    this.set({})
+  }
+
   rules(): TRules<Model> {
     return {};
   };

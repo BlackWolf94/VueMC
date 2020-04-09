@@ -1,4 +1,5 @@
 # Base usage
+---
 ## Create instance
 
 ```typescript

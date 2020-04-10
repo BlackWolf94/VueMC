@@ -10,7 +10,7 @@
 ```typescript
 import { Model} from '@zidadindimon/vue-mc';
 
-export class Task extends Model<any> {
+export class Task extends Model {
   
   protected onInit() {
     super.onInit();

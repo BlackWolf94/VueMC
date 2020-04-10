@@ -7,3 +7,4 @@ export * from './ICollection';
 export * from './IModel'
 export * from './plugin';
 export * from './TApiConf'
+export * from './IException'

@@ -32,7 +32,7 @@ class TestModel extends Model<TModelInitProps> {
 describe('Model: initialize', () => {
   const model = new TestModel();
 
-  it('init', () => {
+  it('should be init', () => {
 
     const emptyModel = new class extends Model {
       id: number;
@@ -45,22 +45,22 @@ describe('Model: initialize', () => {
 
   model.init({ secondName: 'Second name', id: 5 });
 
-  it('default value', () => {
+  it('should be applied default value', () => {
     expect(model.name).toBe('Test');
     expect(model.secondName).toBe('Second name');
   });
 
-  it('mutations value', () => {
+  it('should be mutations value', () => {
     expect(model.id).toBe(500);
     expect(model.uuid).toBe('uuid: 500');
     console.error(model)
   });
 
-  it('computed value', () => {
+  it('should be computed value', () => {
     expect(model.fullName).toBe('Test Second name');
   });
 
-  it('computed: after change value', () => {
+  it('should be computed after change value', () => {
     model.name = 'Change';
     expect(model.fullName).toBe('Change Second name');
   });

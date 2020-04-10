@@ -5,31 +5,32 @@
  */
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
-import { ErrorHandler } from './ErrorHandler';
-import { IModel, TApiConf, TMutations, TObject, TRule, TRules } from '@/types';
-import { TModelError } from '@/types/IException';
+import { ErrorHandler } from './Handler';
+import { IModel, TApiConf, TModelError, TMutations, TObject, TRule, TRules } from '../types';
+import { ConfigureApiException, ValidateException } from './Exception';
 
-export class Model<D = TObject> implements IModel<D> {
+export class Model<Initial = TObject, S = any, U = S> implements IModel<Initial> {
 
   static async fetch<T extends Model>(...params: any[]): Promise<T> {
     const model: T = (new this) as T;
     return await model.fetch(params);
   }
 
-  private _loading: boolean;
+  private _loading: boolean = false;
   private _isNew: boolean = true;
   private _attrsErrors: TObject<string> = {};
   private _error: string = null;
+  protected validationBeforeSave: boolean = true;
 
   constructor() {
-    this.set({})
+    this.set({});
   }
 
   rules(): TRules<Model> {
     return {};
   };
 
-  init(data?: D, isNew: boolean = true) {
+  init(data?: Initial, isNew: boolean = true) {
     this.set(data);
     this._isNew = isNew;
     this.onInit();
@@ -39,21 +40,8 @@ export class Model<D = TObject> implements IModel<D> {
   protected onInit() {
   }
 
-  api(): TApiConf {
-    return {
-      fetch(): any {
-        throw new Error(`${this.constructor.name}:  fetch api not configure`);
-      },
-      save(): any {
-        throw new Error(`${this.constructor.name}: Save api method not configure`);
-      },
-      update(): any {
-        throw new Error(`${this.constructor.name}: Update api method not configure`);
-      },
-      delete(): any {
-        throw new Error(`${this.constructor.name}: Delete api method not configure`);
-      },
-    };
+  api(): Partial<TApiConf<Initial, S, U>> {
+    return {};
   }
 
   private default(): Partial<this> {
@@ -84,12 +72,12 @@ export class Model<D = TObject> implements IModel<D> {
     return this;
   }
 
-  protected mutations(data: D): TMutations<Model> {
+  protected mutations(data: Initial): TMutations<Model> {
     return {};
   }
 
-  protected mutateBeforeSave(): TObject | null {
-    return null;
+  protected mutateBeforeSave(): TMutations<any> {
+    return {};
   }
 
   protected before() {
@@ -104,20 +92,38 @@ export class Model<D = TObject> implements IModel<D> {
 
   @ErrorHandler()
   async fetch(...filters: any[]) {
+    if (!this.api().fetch) {
+      throw new ConfigureApiException(this.constructor.name, 'fetch');
+    }
+
     this.init(await this.api().fetch(filters), false);
     return this;
   }
 
   @ErrorHandler()
   async delete(): Promise<boolean> {
+    if (!this.api().delete) {
+      throw new ConfigureApiException(this.constructor.name, 'delete');
+    }
+
     this.onDelete(await this.api().delete());
     return true;
   }
 
   @ErrorHandler()
   async save(): Promise<boolean> {
-    const method = this._isNew ? 'save' : 'update';
-    this.onSave(await this.api()[method](this.prepareForSave()));
+    const methodName = this.isNew ? 'save' : 'update';
+    const method = this.api()[methodName];
+
+    if (!method) {
+      throw new ConfigureApiException(this.constructor.name, methodName);
+    }
+
+    if (this.validationBeforeSave && !this.validate()) {
+      throw new ValidateException();
+    }
+
+    this.onSave(await method.call(this, this.prepareForSave()));
     this._isNew = false;
     return true;
   }
@@ -128,24 +134,26 @@ export class Model<D = TObject> implements IModel<D> {
   protected onSave(data: any): void {
   }
 
-  protected onError(exception: Error | any) {
+  protected onError(exception: Error) {
     this._loading = false;
-    this._error = exception.message;
+
+    if (!(exception instanceof ValidateException)) {
+      this._error = exception.message;
+    }
+
     throw exception;
   }
 
-  protected prepareForSave(): TObject {
+  protected prepareForSave(): S | U {
     const mutations = this.mutateBeforeSave();
-    if (!mutations) {
-      return Object.values(this);
-    }
-
     const data: TObject = {};
+
     Object.keys(mutations)
       .forEach((key: string) => {
         data[key] = this.mutation(key, mutations[key]);
       });
-    return data;
+
+    return (TypeHelper.isEmpty(mutations) ? Object.values(this) : data) as S | U;
   }
 
   private mutation(key: string, mutation: any): any {
@@ -169,13 +177,19 @@ export class Model<D = TObject> implements IModel<D> {
     Object.keys(attrsRules)
       .forEach(key => {
         const rules: TRule<keyof this>[] = attrsRules[key];
-        const errors: string[] = rules.map<true | string>(rule => rule.call(this, this[key]))
-          .filter(error => TypeHelper.isString(error)) as string[];
-        errors.length && (attrsErrors[key] = errors.shift());
+
+        for (const rule of rules) {
+          const error = rule.call(this, this[key]);
+
+          if (TypeHelper.isString(error)) {
+            attrsErrors[key] = error;
+            break;
+          }
+        }
       });
 
     Vue.set(this, '_attrsErrors', attrsErrors);
-    return this.hasError;
+    return !this.hasError;
   }
 
   get errors(): TModelError {
@@ -185,7 +199,11 @@ export class Model<D = TObject> implements IModel<D> {
     };
   }
 
-  get loading() {
+  get loading(): boolean {
     return this._loading;
+  }
+
+  get isNew(): boolean {
+    return this._isNew;
   }
 }

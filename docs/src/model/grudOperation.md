@@ -2,4 +2,10 @@
 ----
 ## Api
 
+```typescript
+
+
+```
+
+
 ## Validation

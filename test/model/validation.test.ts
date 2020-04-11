@@ -3,71 +3,37 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { Model, IModelApiProvider, TRules, ValidateException } from '../../src';
 
-class Todo extends Model {
-  id: number = null;
-  name: string = null;
-  description: string = null;
-  createdAt: Date = new Date();
-  done: boolean = false;
 
-  rules(): TRules<Todo> {
-    return {
-      name: [
-        (v) => !!v || 'Name of task is required',
-        (v) => v.length < 10 || 'Max length 10 symbols',
-      ],
-      description: [
-        (v) => !!v || 'Description can`t be empty',
-        (v) => v.length > 10 || 'Min length 10 symbols',
-      ],
-    };
-  }
 
-  api(): Partial<IModelApiProvider> {
-    return {
-      save(): Promise<any> {
-        return
-      }
-    };
-  }
-}
-
+import { TaskModel } from '../Task.model';
+import { ValidateException } from '../../src';
 
 describe('Model: validation', function() {
 
   it('should be validation error', function() {
-    const model = new Todo();
+    const model = new TaskModel();
+
+    model.description = 'Description';
 
     expect<boolean>(model.validate()).toBeFalsy();
     expect(JSON.stringify(model.errors.attrs))
       .toBe(JSON.stringify({
-        name: 'Name of task is required',
-        description: 'Description can`t be empty',
-      }));
-
-    model.name = 'Long long name';
-    model.description = 'aaa';
-
-    expect<boolean>(model.validate()).toBeFalsy();
-    expect(JSON.stringify(model.errors.attrs))
-      .toBe(JSON.stringify({
-        name: 'Max length 10 symbols',
-        description: 'Min length 10 symbols',
+        title: 'Title can`t be empty',
+        description: 'Description must be more 15 symbols',
       }));
   });
 
   it('should be validation success', function() {
-    const model = new Todo();
-    model.name = 'Todo name';
+    const model = new TaskModel();
+    model.title = 'Test task title';
     model.description = 'Todo description';
 
     expect<boolean>(model.validate()).toBeTruthy();
   });
 
   it('should be throw Validate exception', async function() {
-    const model = new Todo();
+    const model = new TaskModel();
     try {
       await model.save();
     } catch (e) {
@@ -77,8 +43,8 @@ describe('Model: validation', function() {
   });
 
   it('should be save success', async function() {
-    const model = new Todo();
-    model.name = 'Todo name';
+    const model = new TaskModel();
+    model.title = 'Test task title';
     model.description = 'Todo description';
     expect<boolean>(await model.save()).toBeTruthy();
   });

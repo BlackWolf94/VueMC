@@ -9,13 +9,23 @@
 <!--  <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css">-->
 <!--  <link rel="stylesheet" href="//unpkg.com/docsify/themes/dark.css"/>-->
   <!-- Theme: Simple (latest v0.x.x) -->
+<!--  <link rel="stylesheet" href="://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">-->
 <!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css">-->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sushantrahate/docsify-darkly-theme/css/darkly.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple-dark.css">
+<!--  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/sushantrahate/docsify-darkly-theme/css/darkly.min.css">-->
+  <style>
+    :root {
+      --content-max-width                 : 80em;
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
   <script>
     window.$docsify = {
+      plantuml: {
+        skin: 'default',
+      },
       name: '@zidadindimon/vue-mc',
       repo: 'ssh://git@github.com:BlackWolf94/VueMC',
       basePath: '/src/',
@@ -24,7 +34,7 @@
       loadSidebar: 'sidebar.md',
       themeable: {
         readyTransition : true, // default
-        responsiveTables: true  // default
+        responsiveTables: false  // default
       }
     }
   </script>
@@ -33,6 +43,6 @@
   <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-pug.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/prismjs/components/prism-typescript.min.js"></script>
-
+  <script src="//unpkg.com/docsify-plantuml/dist/docsify-plantuml.min.js"></script>
 </body>
 </html>

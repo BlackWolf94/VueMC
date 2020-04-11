@@ -1,15 +1,16 @@
-* Introduction
-  * [Getting started](README.md)
+* [Getting started](README.md)
   
 * Model
-  * **Simply usage**  
-    * [Initialization](model/initialize.md?id=create-instance)
-    * [Default value](model/initialize.md?id=default-value)
-    * [Mutations](model/initialize.md?id=mutations)
-  * GRUD operation
-      * [Api](model/grudOperation.md?id=api)
-      * [Validation](model/grudOperation.md?id=validation)
-  * [Hooks](model/hooks.md) 
+  * [Usage](model.md?id=create-instance)
+  * [Default value](model.md?id=default-value)
+  * [Mutations](model.md?id=mutations)
+  * [Computed value](model.md?id=computed-value)
+  * [Api](model.md?id=grud-operation)
+    * [Save/Update](model.md?id=saveupdate-model)
+    * [Delete](model.md?id=delete)
+    * [Fetch](model.md?id=fetch)
+  * [Hooks](model.md?id=hooks) 
+  * [Validation](model.md?id=validation) 
   
 
 * Collection

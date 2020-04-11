@@ -12,7 +12,7 @@ export type TTaskInitData = {
   createdAt?: number;
   done?: boolean;
   data?: any;
-  author? : {
+  author?: {
     firstName: string;
     lastName: string;
   }
@@ -56,7 +56,7 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   protected mutations(data: TTaskInitData): TMutations<TaskModel> {
     return {
       createdAt: () => new Date(data.createdAt),
-      author: () => data.author ? `${data.author.firstName} ${data.author.lastName}`: ''
+      author: () => data.author ? `${data.author.firstName} ${data.author.lastName}` : '',
     };
   }
 
@@ -106,7 +106,7 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
         return {
           id: data.id,
           title: `Task #${data.id}`,
-          description: 'Description of task'
+          description: 'Description of task',
         };
       },
       async save(data?: TTaskInitData): Promise<any> {

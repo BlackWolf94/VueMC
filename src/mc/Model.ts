@@ -12,6 +12,7 @@ import { Base } from './Base';
 
 export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Base<TModelError,
   IModelApiProvider<SD, D, FO, DO>> {
+
   static async fetch<T extends Model, FO = TObject>(params?: FO): Promise<T> {
     const model: T = new this() as T;
     return await model.fetch(params);
@@ -153,11 +154,10 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Ba
 
   @ExceptionHandler()
   async save(): Promise<boolean> {
-    const method = this.getApiProvideMethod(this.isNew ? 'save' : 'update');
-
     if (this._validationBeforeSave && !this.validate()) {
       throw new ValidateException();
     }
+    const method = this.getApiProvideMethod(this.isNew ? 'save' : 'update');
 
     this.onSave(await method.call(this, this.prepareForSave()));
     this._isNew = false;

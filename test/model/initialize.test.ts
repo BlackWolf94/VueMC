@@ -3,66 +3,57 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/3/20
  */
-import { Model, TMutations } from '../../src';
 
-type TModelInitProps = {
-  id: number;
-  secondName: string;
-  name?: string;
-}
-
-class TestModel extends Model<TModelInitProps> {
-  id: number;
-  name: string = 'Test';
-  secondName: string;
-  uuid: string;
-
-  protected mutations(data: TModelInitProps): TMutations<TestModel> {
-    return {
-      id: data.id * 100,
-      uuid: () => `uuid: ${this.id}`,
-    };
-  }
-
-  get fullName(): string {
-    return `${this.name} ${this.secondName}`;
-  }
-}
+import { TaskModel, TTaskInitData } from '../Task.model';
 
 describe('Model: initialize', () => {
-  const model = new TestModel();
 
-  it('should be init', () => {
+  it('should be apply default value', function() {
+    const model = new TaskModel();
 
-    const emptyModel = new class extends Model {
-      id: number;
-      name: string = 'Test';
-    };
-
-    expect(emptyModel.id).toBeUndefined();
-    expect(emptyModel.name).toBe('Test');
+    expect(model.createdAt).toBeInstanceOf(Date);
+    expect(model.id).toBeNull()
+    expect(model.isNew).toBeTruthy()
   });
 
-  model.init({ secondName: 'Second name', id: 5 });
+  it('should be apply initialize', function() {
+    const model = new TaskModel();
+    const data: TTaskInitData = {
+      id: 1,
+      title: 'Title',
+      description: 'Description',
+      createdAt: new Date().valueOf(),
+      done: false,
+      data: 'this field is not asign into model'
+    }
+    model.init(data, false);
+    expect(model.id).toBe(data.id);
+    expect(model.isNew).toBeFalsy();
+    expect((model as any).data).toBeUndefined();
 
-  it('should be applied default value', () => {
-    expect(model.name).toBe('Test');
-    expect(model.secondName).toBe('Second name');
   });
 
-  it('should be mutations value', () => {
-    expect(model.id).toBe(500);
-    expect(model.uuid).toBe('uuid: 500');
-    console.error(model)
+  it('should be apply mutations', function() {
+    const model = new TaskModel();
+    const data: TTaskInitData = {
+      author: {
+        firstName: 'Dmitro',
+        lastName: 'Zataidukh'
+      },
+    }
+
+    const {firstName, lastName} = data.author;
+    model.init(data, false);
+    expect(model.author).toBe(`${firstName} ${lastName}`);
   });
 
-  it('should be computed value', () => {
-    expect(model.fullName).toBe('Test Second name');
-  });
+  it('should be reactive computed value', function() {
+    const model = new TaskModel();
+    const data: TTaskInitData = {
+      createdAt: new Date().valueOf(),
+    }
+    model.init(data, false);
+    expect(model.dateFormat).toBe(new Date(data.createdAt).toDateString());
 
-  it('should be computed after change value', () => {
-    model.name = 'Change';
-    expect(model.fullName).toBe('Change Second name');
   });
-
 });

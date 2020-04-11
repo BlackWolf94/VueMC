@@ -1,36 +1,48 @@
 /**
- * @author Dimitry Zataidukh
+ * @author Dmitro Zataidukh
  * @email zidadindimon@gmail.com
- * @created_at 11/26/19
+ * @createdAt 4/10/20
  */
-
+import { Base } from './Base';
+import { ICollectionApiProvider, TObject } from '../types';
 import Vue from 'vue';
 import { Model } from './Model';
 import TypeHelper from '@zidadindimon/js-typehelper';
-import { ICollection, TApiCollectionConf, TCollectionFilter, TObject } from '@/types';
+import Timeout = NodeJS.Timeout;
+import { ExceptionHandler } from './Handler';
 
-export class Collection<M extends Model, F = TObject> implements ICollection<M> {
-  get pageSize(): number {
-    return this.models.length;
+export class Collection<M, T,  F = TObject> extends Base<string, ICollectionApiProvider<T, F>> {
+  protected _timerId: Timeout;
+  protected _updateInterval: number = null;
+  protected _models: M[] = [];
+  protected _pages: number = 0;
+  protected _total: number = 0;
+  private _filterOpt: F = null;
+
+  selected: M = null;
+
+  [Symbol.iterator](): IterableIterator<M> {
+    return this._models[Symbol.iterator]();
   }
 
   get length() {
-    return this.models.length;
+    return this._models.length;
   }
 
-  get filter(): TCollectionFilter<F> {
-    return this.filters;
+  get errors(): string {
+    return this._error;
   }
 
-  pages: number;
-  total: number;
-  protected models: M[];
-  protected selected: M;
-  protected filters: TCollectionFilter<F>;
-  protected timerId: any;
+  get pages(): number {
+    return this._pages;
+  }
 
-  constructor() {
-    this.clear().srrInit();
+  get total(): number {
+    return this._total;
+  }
+
+  get filterOpt(): F {
+    return this._filterOpt;
   }
 
   clear(): this {
@@ -38,12 +50,9 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
     return this;
   }
 
-  active(): M {
-    return this.selected;
-  }
-
-  replace(items: Array<TObject | M> | TObject | M): this {
-    return this.clear().add(items);
+  private addItem(item: TObject | M) {
+    this._models.push(this.initModel(item));
+    return this;
   }
 
   add(items: Array<TObject | M> | TObject | M): this {
@@ -52,13 +61,44 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
     return this;
   }
 
+  replace(items: Array<TObject | M> | TObject | M): this {
+    return this.clear().add(items);
+  }
+
+  protected model(item?: TObject | M): { new(): M } {
+    return null;
+  }
+
+  protected onModelInit(model: M): this {
+    return this
+  }
+
+  protected initModel(item: TObject | M): M {
+    const modelClass: { new(): M } = this.model(item);
+    if (item as M instanceof Model || !modelClass) {
+      return item as M;
+    }
+    const model: M = new modelClass();
+    (model as any).init(item, false);
+    this.onModelInit(model as M)
+    return model;
+  }
+
+  getItems(): M[] {
+    return this._models;
+  }
+
+  get(index: number) : M {
+    return this._models[index]
+  }
+
   first(): M {
-    return this.models.length ? this.models[0] : null;
+    return this._models.length ? this._models[0] : null;
   }
 
   last(): M {
-    const { length } = this.models;
-    return length ? this.models[length - 1] : null;
+    const { length } = this._models;
+    return length ? this._models[length - 1] : null;
   }
 
   remove(el: Array<number | M> | number | M): this {
@@ -68,113 +108,66 @@ export class Collection<M extends Model, F = TObject> implements ICollection<M> 
   }
 
   select(index: number): this {
-    this.selected = this.models[index] || null;
+    this.selected = this._models[index] || null;
     return this;
   }
 
-  get(index: number): M {
-    return this.models[index];
+  protected removeItem(el: number | M) {
+    const index: number = TypeHelper.isNumber(el) ? (el as number) : this._models.findIndex(model => model === el);
+    this._models.splice(index, 1);
+    return this.replace(this._models);
   }
 
-  getItems(): M[] {
-    return this.models;
+  protected defFilterOpt(): F {
+    return {} as F;
   }
 
-  setFilters(filters: TObject = {}): this {
+  protected setFilterOpt(filterOpt: F) {
     Vue.set(
       this,
-      'filters',
-      this.mutateFilter({
-        ...this.defFilter(),
-        ...(this.filters || {}),
-        ...filters,
-      }),
+      '_filterOpt',
+      {
+        ...this.defFilterOpt(),
+        ...this._filterOpt,
+        ...filterOpt
+      },
     );
     return this;
   }
 
-  api(): TApiCollectionConf<M> {
-    return {
-      fetch() {
-        throw new Error('Fetch api method not configure');
-      },
-    };
-  }
-
-  fetch(filters?: TCollectionFilter<F>): Promise<this> {
-    this.setFilters(filters);
-    clearInterval(this.timerId);
-    if (process.env.VUE_ENV === 'client' && this.updateInterval()) {
-      this.timerId = setInterval(this.fetchList.bind(this), this.updateInterval());
-    }
-    return this.fetchList();
-  }
-
   destruct(): void {
-    clearInterval(this.timerId);
+    clearInterval(this._timerId);
     this.clear();
-  }
-
-  [Symbol.iterator](): IterableIterator<M> {
-    return this.models[Symbol.iterator]();
-  }
-
-  srrInit() {
-    return this;
-  }
-
-  protected ssrKey(): string {
-    return this.constructor.name;
-  }
-
-  protected model(item?: TObject | M): typeof Model {
-    return Model;
-  }
-
-  protected initModel(item: TObject | M): M {
-    if (item instanceof Model) return item;
-    const modelClass = this.model(item);
-    // @ts-ignore
-    return new modelClass(item);
-  }
-
-  protected removeItem(el: number | M) {
-    const index: number = TypeHelper.isNumber(el) ? (el as number) : this.models.findIndex(model => model === el);
-    this.models.splice(index, 1);
-    return this;
-  }
-
-  protected defFilter(): TCollectionFilter<F> {
-    return {
-      page: 0,
-      size: 50,
-    };
-  }
-
-  protected mutateFilter(filters: TCollectionFilter<F>): any {
-    return filters;
-  }
-
-  protected updateInterval(): number {
-    return 0;
-  }
-
-  protected async fetchList(): Promise<this> {
-    this.beforeFetch();
-    const { content, pages, size, total } = await this.api().fetch(this.filters);
-    this.pages = pages;
-    this.total = total || pages * (size || (this.filters as any).size);
-    this.replace(content);
-    this.afterFetch();
-    return this;
   }
 
   protected beforeFetch() {}
 
   protected afterFetch() {}
 
-  private addItem(item: TObject | M) {
-    this.models.push(this.initModel(item));
+  @ExceptionHandler()
+  protected async fetchList(): Promise<this> {
+    const method = this.getApiProvideMethod('fetch');
+
+    this.beforeFetch();
+    const { content, pages, size, total } = await method.call(this, this._filterOpt);
+    this._pages = pages;
+    this._total = total || pages * (size || (this._filterOpt as any).size);
+    this.replace(content);
+    this.afterFetch();
     return this;
+  }
+
+  fetch(filters?: F): Promise<this> {
+    this.setFilterOpt(filters);
+    clearInterval(this._timerId);
+    if (process.env.VUE_ENV === 'client' && this._updateInterval) {
+      this._timerId = setInterval(this.fetchList.bind(this), this._updateInterval);
+    }
+    return this.fetchList();
+  }
+
+  protected onError(exception: Error) {
+    this._error = exception.message;
+    super.onError(exception);
   }
 }

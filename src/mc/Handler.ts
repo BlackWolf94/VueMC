@@ -6,7 +6,7 @@
 
 const isDev = process.env.NODE_ENV !== 'production';
 
-export function ErrorHandler() {
+export function ExceptionHandler() {
   return (target: any, key: string, descriptor: TypedPropertyDescriptor<any>): any => {
     const method: Function = descriptor.value;
 

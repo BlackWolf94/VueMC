@@ -3,7 +3,7 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { Model, TApiConf, TRules, ValidateException } from '../../src';
+import { Model, IModelApiProvider, TRules, ValidateException } from '../../src';
 
 class Todo extends Model {
   id: number = null;
@@ -25,7 +25,7 @@ class Todo extends Model {
     };
   }
 
-  api(): Partial<TApiConf> {
+  api(): Partial<IModelApiProvider> {
     return {
       save(): Promise<any> {
         return

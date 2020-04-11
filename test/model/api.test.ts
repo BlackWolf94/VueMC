@@ -4,130 +4,105 @@
  * @createdAt 4/8/20
  */
 
-import { ConfigureApiException, Model, TMutations } from '../../src';
+import { TaskModel, TTaskDelOpt, TTaskInitData } from '../Task.model';
+import { ConfigureApiException } from '../../src';
 
-type TTestApiData = {
-  isNew: boolean;
-  data: {
-    option1: string;
-    option2: string;
-    createdAt: string;
-  };
-}
-
-type TModelInitData = {
-  option1: string;
-  option2: string;
-  createdAt: Date;
-}
-
-const today = new Date();
-
-class TestModel extends Model<TModelInitData, TTestApiData> {
-  option1: string = 'option 1';
-  option2: string = 'option 2';
-  createdAt: Date = today;
-
-  protected mutateBeforeSave(): TMutations<TTestApiData> {
-    return {
-      isNew: this.isNew,
-      data: () => ({
-        option1: this.option1,
-        option2: this.option2,
-        createdAt: this.createdAt.toDateString(),
-      }),
-    };
-  }
-}
 
 describe('Model:api', () => {
-  const model = new TestModel();
 
-  // it('should be save success', async function() {
-  //   TestModel.prototype.api = function() {
-  //     expect<boolean>(this.loading).toBe(true);
-  //     return {
-  //       async save(data: TTestApiData): Promise<void> {
-  //         expect<boolean>(data.isNew).toBe(true);
-  //         expect<string>(data.data.createdAt).toBe(today.toDateString());
-  //       },
-  //     };
-  //   };
-  //
-  //   await model.save();
-  //   expect<boolean>(model.loading).toBe(false);
-  //   expect<boolean>(model.isNew).toBe(false);
-  // });
-  //
-  // it('should be update success', async function() {
-  //   TestModel.prototype.api = function() {
-  //     expect<boolean>(this.loading).toBe(true);
-  //     return {
-  //       async update(data: TTestApiData): Promise<void> {
-  //         expect<boolean>(data.isNew).toBe(false);
-  //       },
-  //     };
-  //   };
-  //
-  //   await model.save();
-  //   expect<boolean>(model.loading).toBe(false);
-  //   expect<boolean>(model.isNew).toBe(false);
-  // });
-  //
-  // it('should be delete success', async function() {
-  //   TestModel.prototype.api = function() {
-  //     expect<boolean>(this.loading).toBe(true);
-  //     return {
-  //       async delete(): Promise<void> {
-  //         expect(true).toBeTruthy();
-  //       },
-  //     };
-  //   };
-  //   await model.delete();
-  //   expect<boolean>(model.loading).toBe(false);
-  // });
-  //
-  // it('should be fetch success', async function() {
-  //   const date = new Date();
-  //   TestModel.prototype.api = function() {
-  //     expect<boolean>(this.loading).toBeTruthy();
-  //     return {
-  //       async fetch(): Promise<TModelInitData> {
-  //         return {
-  //           option1: 'TestModel option 1',
-  //           option2: 'TestModel option 2',
-  //           createdAt: date,
-  //         };
-  //       },
-  //     };
-  //   };
-  //
-  //   const model2 = await TestModel.fetch<TestModel>();
-  //
-  //   expect<boolean>(model2.loading).toBeFalsy();
-  //   expect<boolean>(model2.isNew).toBeFalsy();
-  //
-  //   expect(model2.option1).toBe('TestModel option 1');
-  //   expect(model2.createdAt).toBe(date);
-  // });
-  //
-  // it('should be configure exception', async function() {
-  //   TestModel.prototype.api = function() {
-  //     expect<boolean>(this.loading).toBeTruthy();
-  //     return {};
-  //   };
-  //   const model2 = new TestModel();
-  //   try {
-  //     await model2.save();
-  //   } catch (e) {
-  //     expect(e).toBeInstanceOf(ConfigureApiException);
-  //     expect(model2.hasError).toBeTruthy();
-  //     expect(JSON.stringify(model2.errors)).toBe(JSON.stringify({
-  //       model: 'TestModel: save api method not configure',
-  //       attrs: {},
-  //     }));
-  //   }
-  // });
+  it('should be save success', async function() {
+    const model = new TaskModel();
+    model.title = 'Test task title';
+    model.description = 'Todo description';
+
+    model.useApi({
+      async save(data?: TTaskInitData): Promise<any> {
+        expect<boolean>(model.isNew).toBeTruthy();
+        expect<TTaskInitData>(data).toStrictEqual({
+          id: model.id,
+          title: model.title,
+          description: model.description,
+          done: model.done,
+          createdAt: model.createdAt.valueOf(),
+        });
+      },
+    });
+
+    expect(await model.save()).toBeTruthy();
+    expect<boolean>(model.loading).toBeFalsy();
+    expect<boolean>(model.isNew).toBeFalsy();
+  });
+
+  it('should be update success', async function() {
+    const model = new TaskModel();
+    model.init({
+      title: 'Test task title',
+      description: 'Todo description',
+      done: false,
+    }, false);
+
+    model.done = true;
+
+    model.useApi({
+      async update(data?: TTaskInitData): Promise<any> {
+        expect<boolean>(model.isNew).toBeFalsy();
+        expect<TTaskInitData>(data).toStrictEqual({
+          id: model.id,
+          title: model.title,
+          description: model.description,
+          done: model.done,
+          createdAt: model.createdAt.valueOf(),
+        });
+      },
+    });
+
+    expect(await model.save()).toBeTruthy();
+    expect<boolean>(model.loading).toBeFalsy();
+    expect<boolean>(model.isNew).toBeFalsy();
+  });
 
 
+  it('should be delete success', async function() {
+    const model = new TaskModel();
+    model.init({
+      id: 1,
+    }, false);
+
+    model.useApi({
+      async delete(data?: TTaskDelOpt): Promise<any> {
+        expect<TTaskInitData>(data).toStrictEqual({ id: model.id });
+      },
+    });
+
+    await model.delete();
+    expect<boolean>(model.loading).toBeFalsy();
+  });
+
+  it('should be fetch success', async function() {
+    const id = 1;
+
+    const model = await TaskModel.fetch<TaskModel>({ id });
+
+    expect(model.id).toBe(id);
+    expect(model.title).toBe(`Task #${id}`);
+    expect<boolean>(model.loading).toBeFalsy();
+
+  });
+
+
+  it('should be configure exception', async function() {
+    const model = new TaskModel();
+    model.useApi({});
+
+    try {
+      await model.save();
+    } catch (e) {
+      expect(e).toBeInstanceOf(ConfigureApiException);
+      expect(model.hasError).toBeTruthy();
+      expect(model.errors).toStrictEqual({
+        model: 'TaskModel: save api method not configure',
+        attrs: {},
+      });
+    }
+  });
 });

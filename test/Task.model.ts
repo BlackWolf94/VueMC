@@ -103,7 +103,11 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   protected api(): IModelApiProvider<TTaskInitData, TTaskInitData, TTaskFetchOpt, TTaskDelOpt> {
     return {
       async fetch(data?: TTaskFetchOpt): Promise<TTaskInitData> {
-        return null;
+        return {
+          id: data.id,
+          title: `Task #${data.id}`,
+          description: 'Description of task'
+        };
       },
       async save(data?: TTaskInitData): Promise<any> {
       },

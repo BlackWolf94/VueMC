@@ -48,10 +48,7 @@ export abstract class Base<E, A> implements IBase<A> {
   }
 
   protected get apiProvider(): Partial<A> {
-    return {
-      ...(this.api() || {}),
-      ...(this._apiProvider || {}),
-    };
+    return this._apiProvider || this.api() || {};
   }
 
   protected getApiProvideMethod<K extends keyof A>(methodName: K): A[K] {

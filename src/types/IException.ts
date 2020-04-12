@@ -3,8 +3,7 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/3/20
  */
-import { TObject } from '@/types/IModel';
-
+import { TObject } from './IMC';
 
 export type TModelError = {
   model: string;

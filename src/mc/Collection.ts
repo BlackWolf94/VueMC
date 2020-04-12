@@ -191,5 +191,4 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
     this._error = exception.message;
     super.onError(exception);
   }
-
 }

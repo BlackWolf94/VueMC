@@ -4,11 +4,11 @@
   "description": "vue model/collection system",
   "main": "lib/index.js",
   "module": "lib/index.js",
-  "types": "types/index.d.ts",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "jest",
     "copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" types",
-    "build": "rimraf types && rimraf lib && tsc && npm run copy-dts",
+    "build": "rimraf types && rimraf lib && tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",

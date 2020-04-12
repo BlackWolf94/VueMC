@@ -1,10 +1,7 @@
-/**
- * @author Dmitro Zataidukh
- * @email zidadindimon@gmail.com
- * @createdAt 4/10/20
- */
-import { Collection, ICollectionApiProvider, TFetchResp } from '../../src';
-import { TaskModel, TTaskInitData } from './Task.model';
+# Usage
+
+Consider the following collection as an example:
+```typescript
 
 /**
  * @comment collection filter data interface
@@ -15,7 +12,7 @@ export type TTodoFilterOpt = {
 }
 
 /**
- * @comment addition data attributes that can get by fetch api
+ * @comment addition data attributes that can get by fetch api 
  */
 export type TInitialData = {
   metaInfo?: string;
@@ -32,7 +29,7 @@ export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTo
   }
 
   /**
-   * @comment custom value
+   * @comment custom value 
    */
   metaInfo: string = null;
 
@@ -59,8 +56,8 @@ export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTo
       size: 20,
     };
   }
-
-
+  
+  
   /**
    * @comment computed value
    */
@@ -83,8 +80,8 @@ export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTo
   }
 
   /**
-   * @comment simply pagination
-   */
+   * @comment simply pagination  
+   */  
   set page(page: number) {
     this.fetch({page})
   }
@@ -96,3 +93,20 @@ export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTo
     return super.onModelInit(model);
   }
 }
+```
+
+# Initialize collection
+
+```typescript
+const collection = new TodoListCollection()
+collection.add({...});
+collection.add([{...}, {...}])
+```
+or use fetch method
+
+```typescript
+const collection = new TodoListCollection()
+await collection.fetch({});
+await collection.fetch({page: 2, size: 1});
+``` 
+

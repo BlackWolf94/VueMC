@@ -11,14 +11,10 @@
     * [Fetch](model.md?id=fetch)
   * [Hooks](model.md?id=hooks) 
   * [Validation](model.md?id=validation) 
-  
 
 * Collection
-  * [Create collection](collection/initialize.md)
-  * [Api](collection/api.md)
-  * [Filters](collection/filters.md)
-  * [Pagination](collection/pagination.md)
-  * [Methods](collection/methods.md)
+  * [Usage](collection.md)
+  * [Api](collection.md)
   
 * SSR
   * [Configuration](ssr/configuration.md)

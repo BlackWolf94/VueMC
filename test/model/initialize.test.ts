@@ -4,7 +4,7 @@
  * @createdAt 4/3/20
  */
 
-import { TaskModel, TTaskInitData } from '../Task.model';
+import { TaskModel, TTaskInitData } from '../_mc/Task.model';
 
 describe('Model: initialize', () => {
 

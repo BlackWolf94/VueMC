@@ -4,7 +4,7 @@
  * @createdAt 4/8/20
  */
 
-import { TaskModel, TTaskDelOpt, TTaskInitData } from '../Task.model';
+import { TaskModel, TTaskDelOpt, TTaskInitData } from '../_mc/Task.model';
 import { ConfigureApiException } from '../../src';
 
 
@@ -95,6 +95,8 @@ describe('Model:api', () => {
     model.useApi({});
 
     try {
+      model.title = 'Test task title';
+      model.description = 'Todo description';
       await model.save();
     } catch (e) {
       expect(e).toBeInstanceOf(ConfigureApiException);

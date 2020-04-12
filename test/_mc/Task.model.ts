@@ -3,7 +3,7 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { IModelApiProvider, Model, TMutations, TRules } from '../src';
+import { IModelApiProvider, Model, TMutations, TRules } from '../../src';
 
 export type TTaskInitData = {
   id?: number;

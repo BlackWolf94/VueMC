@@ -8,12 +8,11 @@ import { ICollectionApiProvider, TObject } from '../types';
 import Vue from 'vue';
 import { Model } from './Model';
 import TypeHelper from '@zidadindimon/js-typehelper';
-import Timeout = NodeJS.Timeout;
 import { ExceptionHandler } from './Handler';
+import Timeout = NodeJS.Timeout;
 
-export class Collection<M, T,  F = TObject> extends Base<string, ICollectionApiProvider<T, F>> {
+export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICollectionApiProvider<T, F, D>> {
   protected _timerId: Timeout;
-  protected _updateInterval: number = null;
   protected _models: M[] = [];
   protected _pages: number = 0;
   protected _total: number = 0;
@@ -41,7 +40,7 @@ export class Collection<M, T,  F = TObject> extends Base<string, ICollectionApiP
     return this._total;
   }
 
-  get filterOpt(): F {
+  get filterOpt(): Readonly<F> {
     return this._filterOpt;
   }
 
@@ -50,37 +49,37 @@ export class Collection<M, T,  F = TObject> extends Base<string, ICollectionApiP
     return this;
   }
 
-  private addItem(item: TObject | M) {
+  private addItem(item: T | M) {
     this._models.push(this.initModel(item));
     return this;
   }
 
-  add(items: Array<TObject | M> | TObject | M): this {
+  add(items: Array<T | M> | T | M): this {
     if (!Array.isArray(items)) items = [items];
     (items as Array<TObject | M>).forEach(this.addItem.bind(this));
     return this;
   }
 
-  replace(items: Array<TObject | M> | TObject | M): this {
+  replace(items: Array<T | M> | T | M): this {
     return this.clear().add(items);
   }
 
-  protected model(item?: TObject | M): { new(): M } {
+  protected model(item?: T | M): { new(): M } {
     return null;
   }
 
   protected onModelInit(model: M): this {
-    return this
+    return this;
   }
 
-  protected initModel(item: TObject | M): M {
+  protected initModel(item: T | M): M {
     const modelClass: { new(): M } = this.model(item);
     if (item as M instanceof Model || !modelClass) {
       return item as M;
     }
     const model: M = new modelClass();
     (model as any).init(item, false);
-    this.onModelInit(model as M)
+    this.onModelInit(model as M);
     return model;
   }
 
@@ -88,8 +87,8 @@ export class Collection<M, T,  F = TObject> extends Base<string, ICollectionApiP
     return this._models;
   }
 
-  get(index: number) : M {
-    return this._models[index]
+  get(index: number): M {
+    return this._models[index];
   }
 
   first(): M {
@@ -122,14 +121,14 @@ export class Collection<M, T,  F = TObject> extends Base<string, ICollectionApiP
     return {} as F;
   }
 
-  protected setFilterOpt(filterOpt: F) {
+  protected setFilterOpt(filterOpt: Partial<F>) {
     Vue.set(
       this,
       '_filterOpt',
       {
         ...this.defFilterOpt(),
         ...this._filterOpt,
-        ...filterOpt
+        ...filterOpt,
       },
     );
     return this;
@@ -140,28 +139,50 @@ export class Collection<M, T,  F = TObject> extends Base<string, ICollectionApiP
     this.clear();
   }
 
-  protected beforeFetch() {}
+  protected beforeFetch(): void | Promise<void> {
+  }
 
-  protected afterFetch() {}
+  protected afterFetch(): void | Promise<void> {
+  }
+
+  protected init(data: D) {
+    if (!TypeHelper.isObject(data)) {
+      console.warn(`[${this.constructor.name}]: initAttributes data is not object`);
+      return this;
+    }
+    const descriptors = Object.getOwnPropertyDescriptors(this);
+
+    Object.keys(descriptors)
+      .filter( descriptor => !descriptor.match(/^_.*$/gm))
+      .forEach(descriptor => {
+        const property = descriptors[descriptor];
+        Vue.set<this>(this, descriptor, data[descriptor] || property.value);
+      });
+    return this;
+  }
 
   @ExceptionHandler()
   protected async fetchList(): Promise<this> {
     const method = this.getApiProvideMethod('fetch');
-
-    this.beforeFetch();
-    const { content, pages, size, total } = await method.call(this, this._filterOpt);
+    await this.beforeFetch();
+    const { content, pages, size, total, data } = await method.call(this, this._filterOpt);
     this._pages = pages;
     this._total = total || pages * (size || (this._filterOpt as any).size);
+    this.init(data);
     this.replace(content);
-    this.afterFetch();
+    await this.afterFetch();
     return this;
   }
 
-  fetch(filters?: F): Promise<this> {
+  fetch(filters?: Partial<F>): Promise<this> {
     this.setFilterOpt(filters);
-    clearInterval(this._timerId);
-    if (process.env.VUE_ENV === 'client' && this._updateInterval) {
-      this._timerId = setInterval(this.fetchList.bind(this), this._updateInterval);
+    return this.fetchList();
+  }
+
+  autoFetch(filters: F, interval: number) {
+    this.setFilterOpt(filters);
+    if (process.env.VUE_ENV === 'client' && interval) {
+      this._timerId = setInterval(this.fetchList.bind(this), interval);
     }
     return this.fetchList();
   }
@@ -170,4 +191,5 @@ export class Collection<M, T,  F = TObject> extends Base<string, ICollectionApiP
     this._error = exception.message;
     super.onError(exception);
   }
+
 }

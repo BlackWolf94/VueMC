@@ -44,10 +44,12 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Ba
   private default(): Partial<this> {
     const defaults: Partial<this> = {};
     const descriptors = Object.getOwnPropertyDescriptors(this);
-    Object.keys(descriptors).forEach(descriptor => {
-      const property = descriptors[descriptor];
-      defaults[descriptor] = property.value;
-    });
+    Object.keys(descriptors)
+      .filter(descriptor => !descriptor.match(/^_.*$/gm))
+      .forEach(descriptor => {
+        const property = descriptors[descriptor];
+        defaults[descriptor] = property.value;
+      });
     return defaults;
   }
 

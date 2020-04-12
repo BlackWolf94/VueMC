@@ -5,16 +5,17 @@
  */
 
 
-export type TFetchResp<M> = {
+export type TFetchResp<M, D = TObject> = {
   content: M[];
   pages: number;
   page?: number;
   size?: number;
   total?: number;
+  data?: D;
 };
 
-export interface ICollectionApiProvider<T, F> {
-  fetch(filter?: F): Promise<TFetchResp<T>>;
+export interface ICollectionApiProvider<T, F, D= TObject> {
+  fetch(filter?: F): Promise<TFetchResp<T, D>>;
 }
 
 

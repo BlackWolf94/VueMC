@@ -13,7 +13,7 @@ export type TFetchResp<M, D = TObject> = {
   data?: D;
 };
 
-export interface ICollectionApiProvider<T, F, D = TObject> {
+export interface ICollectionApiProvider<T, F = TObject, D = TObject> {
   fetch(filter?: F): Promise<TFetchResp<T, D>>;
 }
 

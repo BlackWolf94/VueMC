@@ -45,7 +45,7 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
   }
 
   clear(): this {
-    Vue.set(this, 'models', []);
+    this._models = []
     return this;
   }
 

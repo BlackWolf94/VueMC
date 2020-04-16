@@ -15,13 +15,13 @@ export interface IModel {}
 export class Model<D = TObject, SD = any, FO = TObject, DO = TObject>
   extends Base<TModelError, IModelApiProvider<SD, D, FO, DO>>
   implements IModel {
-  static async fetch<T extends Model, FO = TObject>(params?: FO): Promise<T> {
+  static async fetch<T extends Model, FO = TObject>(params?: FO, isNew: boolean = false): Promise<T> {
     const model: T = new this() as T;
-    return await model.fetch(params);
+    return await model.fetch(params, isNew);
   }
 
-  private _isNew: boolean = true;
-  private _attrsErrors: TObject<string> = {};
+  protected _isNew: boolean = true;
+  protected _attrsErrors: TObject<string> = {};
   protected _validationBeforeSave: boolean = true;
 
   constructor() {
@@ -102,9 +102,13 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject>
   }
 
   resetValidation() {
-    Vue.set(this, '_attrsErrors', null);
+    this.attrsError = null;
     this._error = null;
     return this;
+  }
+
+  protected set attrsError(value: TObject<string>){
+    Vue.set(this, '_attrsErrors', value);
   }
 
   validate(): boolean {
@@ -124,8 +128,8 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject>
         }
       }
     });
+    this.attrsError = attrsErrors;
 
-    Vue.set(this, '_attrsErrors', attrsErrors);
     return !this.hasError;
   }
 
@@ -142,9 +146,9 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject>
 
   /*api block */
   @ExceptionHandler()
-  async fetch(filters?: FO) {
+  async fetch(filters?: FO, isNew: boolean = false) {
     const method = this.getApiProvideMethod('fetch');
-    this.init(await method.call(this, filters), false);
+    this.init(await method.call(this, filters), isNew);
     return this;
   }
 

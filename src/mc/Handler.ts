@@ -11,19 +11,19 @@ export function ExceptionHandler() {
     const method: Function = descriptor.value;
 
     /**
-     * @this Model | Collection
+     * @this any
      */
     descriptor.value = async function() {
       if (isDev) {
         console.time(`${this.constructor.name}: ${key}`);
       }
       try {
-        this.before();
+        (this as any).before();
         const res = await method.apply(this, arguments);
-        this.after();
+        (this as any).after();
         return res;
       } catch (e) {
-        this.onError(e);
+        (this as any).onError(e);
       } finally {
         if (isDev) {
           console.timeEnd(`${this.constructor.name}: ${key}`);

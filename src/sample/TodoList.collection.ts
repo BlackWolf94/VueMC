@@ -3,7 +3,7 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { Collection, ICollectionApiProvider, TFetchResp } from '../../src';
+import { Collection, ICollectionApiProvider, TFetchResp } from '../index';
 import { TaskModel, TTaskInitData } from './Task.model';
 
 /**
@@ -12,7 +12,7 @@ import { TaskModel, TTaskInitData } from './Task.model';
 export type TTodoFilterOpt = {
   page: number;
   size: number;
-}
+};
 
 /**
  * @comment addition data attributes that can get by fetch api
@@ -20,14 +20,13 @@ export type TTodoFilterOpt = {
 export type TInitialData = {
   metaInfo?: string;
   otherField?: any;
-}
+};
 
 export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTodoFilterOpt, TInitialData> {
-
   /**
    * @comment set model that use in collection
    */
-  protected model(item?: TTaskInitData | TaskModel): { new(): TaskModel } {
+  protected model(item?: TTaskInitData | TaskModel): { new (): TaskModel } {
     return TaskModel;
   }
 
@@ -60,12 +59,11 @@ export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTo
     };
   }
 
-
   /**
    * @comment computed value
    */
   get progress(): number {
-    return this.onlyDone.length / this.length * 100;
+    return (this.onlyDone.length / this.length) * 100;
   }
 
   /**
@@ -78,15 +76,15 @@ export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTo
   /**
    * @comment computed value
    */
-  get page(){
-    return this.filterOpt.page
+  get page() {
+    return this.filterOpt.page;
   }
 
   /**
    * @comment simply pagination
    */
   set page(page: number) {
-    this.fetch({page})
+    this.fetch({ page });
   }
 
   /**

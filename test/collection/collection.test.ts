@@ -4,8 +4,8 @@
  * @createdAt 4/12/20
  */
 
-import { TInitialData, TodoListCollection, TTodoFilterOpt } from '../_mc/TodoList.collection';
-import { TTaskInitData } from '../_mc/Task.model';
+import { TInitialData, TodoListCollection, TTodoFilterOpt } from '../../src/sample/TodoList.collection';
+import { TTaskInitData } from '../../src/sample/Task.model';
 import faker from 'faker';
 import { TFetchResp } from '../../src/types';
 

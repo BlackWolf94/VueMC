@@ -4,7 +4,7 @@
  * @createdAt 4/8/20
  */
 
-import { TaskModel, TTaskDelOpt, TTaskInitData } from '../_mc/Task.model';
+import { TaskModel, TTaskDelOpt, TTaskInitData } from '../../src/sample/Task.model';
 import { ConfigureApiException } from '../../src';
 
 

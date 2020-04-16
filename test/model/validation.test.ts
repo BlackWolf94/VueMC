@@ -6,7 +6,7 @@
 
 
 
-import { TaskModel } from '../_mc/Task.model';
+import { TaskModel } from '../../src/sample/Task.model';
 import { ValidateException } from '../../src';
 
 describe('Model: validation', function() {

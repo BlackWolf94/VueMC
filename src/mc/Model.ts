@@ -10,10 +10,11 @@ import { IModelApiProvider, TModelError, TMutations, TObject, TRule, TRules } fr
 import { ConfigureApiException, ValidateException } from './Exception';
 import { Base } from './Base';
 
-export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Base<
-  TModelError,
-  IModelApiProvider<SD, D, FO, DO>
-> {
+export interface IModel {}
+
+export class Model<D = TObject, SD = any, FO = TObject, DO = TObject>
+  extends Base<TModelError, IModelApiProvider<SD, D, FO, DO>>
+  implements IModel {
   static async fetch<T extends Model, FO = TObject>(params?: FO): Promise<T> {
     const model: T = new this() as T;
     return await model.fetch(params);
@@ -28,7 +29,7 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Ba
     this.set({});
   }
 
-  rules(): TRules<Model> {
+  rules(): TRules<IModel> {
     return {};
   }
 
@@ -57,7 +58,7 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Ba
     return TypeHelper.isFunction(mutation) ? mutation.call(this, this[key]) : mutation;
   }
 
-  protected mutations(data: D): TMutations<Model> {
+  protected mutations(data: D): TMutations<IModel> {
     return {};
   }
 

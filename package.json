@@ -1,6 +1,6 @@
 {
   "name": "@zidadindimon/vue-mc",
-  "version": "2.0.0-beta.2",
+  "version": "2.0.0-beta.5",
   "description": "vue model/collection system",
   "main": "lib/index.js",
   "module": "lib/index.js",
@@ -25,26 +25,26 @@
   "license": "ISC",
   "homepage": "https://github.com/BlackWolf94/VueMC",
   "devDependencies": {
-    "@types/core-js": "^2.5.2",
-    "@types/jest": "^24.0.24",
+    "@types/core-js": "^2.5.3",
+    "@types/jest": "^25.2.1",
     "copyfiles": "^2.1.1",
     "docsify-cli": "^4.4.0",
     "docts": "^0.2.0",
     "faker": "^4.1.0",
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
-    "rimraf": "^3.0.0",
+    "rimraf": "^3.0.2",
     "tplant": "^2.3.3",
     "ts-jest": "^24.2.0",
-    "tslint": "^5.20.1",
+    "tslint": "^6.1.1",
     "tslint-config-prettier": "^1.18.0",
-    "typedoc": "^0.13.0",
+    "typedoc": "^0.17.4",
     "typedoc-markdown-theme": "0.0.4",
-    "typescript": "^3.7.5"
+    "typescript": "~3.5.3"
   },
   "dependencies": {
     "@types/node": "^13.1.0",
     "@zidadindimon/js-typehelper": "^1.0.17",
-    "vue": "^2.6.10"
+    "vue": "^2.6.11"
   }
 }

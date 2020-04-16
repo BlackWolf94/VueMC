@@ -3,7 +3,7 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { IModelApiProvider, Model, TMutations, TRules } from '../../src';
+import { IModelApiProvider, Model, TMutations, TRules } from '../index';
 
 export type TTaskInitData = {
   id?: number;
@@ -15,16 +15,16 @@ export type TTaskInitData = {
   author?: {
     firstName: string;
     lastName: string;
-  }
-}
+  };
+};
 
 export type TTaskFetchOpt = {
   id: number;
-}
+};
 
 export type TTaskDelOpt = {
   id: number;
-}
+};
 
 export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt, TTaskDelOpt> {
   /**
@@ -56,7 +56,7 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   protected mutations(data: TTaskInitData): TMutations<TaskModel> {
     return {
       createdAt: () => new Date(data.createdAt),
-      author: () => data.author ? `${data.author.firstName} ${data.author.lastName}` : '',
+      author: () => (data.author ? `${data.author.firstName} ${data.author.lastName}` : ''),
     };
   }
 
@@ -72,9 +72,7 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
    */
   rules(): TRules<TaskModel> {
     return {
-      title: [
-        v => !!v || 'Title can`t be empty',
-      ],
+      title: [v => !!v || 'Title can`t be empty'],
       description: [
         v => !!v || 'Description can`t be empty',
         v => v.length > 15 || 'Description must be more 15 symbols',
@@ -109,26 +107,21 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
           description: 'Description of task',
         };
       },
-      async save(data?: TTaskInitData): Promise<any> {
-      },
-      async update(data?: TTaskInitData): Promise<any> {
-      },
-      async delete(data?: TTaskDelOpt): Promise<any> {
-      },
+      async save(data?: TTaskInitData): Promise<any> {},
+      async update(data?: TTaskInitData): Promise<any> {},
+      async delete(data?: TTaskDelOpt): Promise<any> {},
     };
   }
 
   /**
    * @comment hook run after safe/update method
    */
-  protected onSave(data: any): void {
-  }
+  protected onSave(data: any): void {}
 
   /**
    * @comment hook run after delete method
    */
-  protected onDelete(data: any): void {
-  }
+  protected onDelete(data: any): void {}
 
   /**
    * @comment hook that call when GRUD operation is fail

@@ -55,8 +55,8 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
   }
 
   add(items: Array<T | M> | T | M): this {
-    if (!Array.isArray(items)) items = [items];
-    (items as Array<TObject | M>).forEach(this.addItem.bind(this));
+    items = Array.isArray(items) ? items : [items];
+    items.forEach(this.addItem.bind(this));
     return this;
   }
 

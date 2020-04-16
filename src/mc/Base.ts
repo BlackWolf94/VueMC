@@ -60,5 +60,4 @@ export abstract class Base<E, A> implements IBase<A> {
 
     return method;
   }
-
 }

@@ -4,5 +4,5 @@
  */
 
 export * from './plugin';
-export * from './IException'
-export * from './IMC'
+export * from './IException';
+export * from './IMC';

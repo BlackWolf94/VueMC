@@ -10,9 +10,10 @@ import { IModelApiProvider, TModelError, TMutations, TObject, TRule, TRules } fr
 import { ConfigureApiException, ValidateException } from './Exception';
 import { Base } from './Base';
 
-export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Base<TModelError,
-  IModelApiProvider<SD, D, FO, DO>> {
-
+export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Base<
+  TModelError,
+  IModelApiProvider<SD, D, FO, DO>
+> {
   static async fetch<T extends Model, FO = TObject>(params?: FO): Promise<T> {
     const model: T = new this() as T;
     return await model.fetch(params);
@@ -38,8 +39,7 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Ba
     return this;
   }
 
-  protected onInit() {
-  }
+  protected onInit() {}
 
   private default(): Partial<this> {
     const defaults: Partial<this> = {};
@@ -168,11 +168,9 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject> extends Ba
 
   /*api block end */
 
-  protected onDelete(data: any): void {
-  }
+  protected onDelete(data: any): void {}
 
-  protected onSave(data: any): void {
-  }
+  protected onSave(data: any): void {}
 
   protected onError(exception: Error) {
     if (!(exception instanceof ValidateException)) {

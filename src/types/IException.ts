@@ -8,4 +8,4 @@ import { TObject } from './IMC';
 export type TModelError = {
   model: string;
   attrs: TObject<string>;
-}
+};

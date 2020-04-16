@@ -4,7 +4,6 @@
  * @createdAt 4/11/20
  */
 
-
 export type TFetchResp<M, D = TObject> = {
   content: M[];
   pages: number;
@@ -14,10 +13,9 @@ export type TFetchResp<M, D = TObject> = {
   data?: D;
 };
 
-export interface ICollectionApiProvider<T, F, D= TObject> {
+export interface ICollectionApiProvider<T, F, D = TObject> {
   fetch(filter?: F): Promise<TFetchResp<T, D>>;
 }
-
 
 export interface IBase<A> {
   readonly loading: boolean;

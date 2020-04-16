@@ -7,7 +7,6 @@
 /* tslint:disable:max-classes-per-file */
 
 export class ConfigureApiException extends Error {
-
   constructor(className: string, methodName: string) {
     super(`${className}: ${methodName} api method not configure`);
   }

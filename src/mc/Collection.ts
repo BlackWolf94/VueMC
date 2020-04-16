@@ -64,7 +64,7 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
     return this.clear().add(items);
   }
 
-  protected model(item?: T | M): { new(): M } {
+  protected model(item?: T | M): { new (): M } {
     return null;
   }
 
@@ -73,8 +73,8 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
   }
 
   protected initModel(item: T | M): M {
-    const modelClass: { new(): M } = this.model(item);
-    if (item as M instanceof Model || !modelClass) {
+    const modelClass: { new (): M } = this.model(item);
+    if ((item as M) instanceof Model || !modelClass) {
       return item as M;
     }
     const model: M = new modelClass();
@@ -122,15 +122,11 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
   }
 
   protected setFilterOpt(filterOpt: Partial<F>) {
-    Vue.set(
-      this,
-      '_filterOpt',
-      {
-        ...this.defFilterOpt(),
-        ...this._filterOpt,
-        ...filterOpt,
-      },
-    );
+    Vue.set(this, '_filterOpt', {
+      ...this.defFilterOpt(),
+      ...this._filterOpt,
+      ...filterOpt,
+    });
     return this;
   }
 
@@ -139,11 +135,9 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
     this.clear();
   }
 
-  protected beforeFetch(): void | Promise<void> {
-  }
+  protected beforeFetch(): void | Promise<void> {}
 
-  protected afterFetch(): void | Promise<void> {
-  }
+  protected afterFetch(): void | Promise<void> {}
 
   protected init(data: D) {
     if (!TypeHelper.isObject(data)) {
@@ -153,7 +147,7 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
     const descriptors = Object.getOwnPropertyDescriptors(this);
 
     Object.keys(descriptors)
-      .filter( descriptor => !descriptor.match(/^_.*$/gm))
+      .filter(descriptor => !descriptor.match(/^_.*$/gm))
       .forEach(descriptor => {
         const property = descriptors[descriptor];
         Vue.set<this>(this, descriptor, data[descriptor] || property.value);

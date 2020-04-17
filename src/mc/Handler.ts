@@ -19,15 +19,15 @@ export function ExceptionHandler() {
       }
       try {
         (this as any).before();
-        const res = await method.apply(this, arguments);
-        (this as any).after();
-        return res;
+        return await method.apply(this, arguments);
       } catch (e) {
-        (this as any).onError(e);
-      } finally {
         if (isDev) {
           console.timeEnd(`${this.constructor.name}: ${key}`);
         }
+        (this as any).after();
+        (this as any).onError(e);
+      } finally {
+        (this as any).after();
       }
     };
     return descriptor;

@@ -48,8 +48,7 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject>
     Object.keys(descriptors)
       .filter(descriptor => !descriptor.match(/^_.*$/gm))
       .forEach(descriptor => {
-        const property = descriptors[descriptor];
-        defaults[descriptor] = property.value;
+        defaults[descriptor] = this[descriptor];
       });
     return defaults;
   }

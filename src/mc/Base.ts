@@ -20,7 +20,6 @@ export abstract class Base<E, A> implements IBase<A> {
 
   protected after() {
     this._loading = false;
-    this._error = null;
   }
 
   abstract get errors(): E;
@@ -30,7 +29,6 @@ export abstract class Base<E, A> implements IBase<A> {
   }
 
   protected onError(exception: Error) {
-    this._loading = false;
     throw exception;
   }
 

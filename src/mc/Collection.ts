@@ -149,8 +149,7 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
     Object.keys(descriptors)
       .filter(descriptor => !descriptor.match(/^_.*$/gm))
       .forEach(descriptor => {
-        const property = descriptors[descriptor];
-        Vue.set<this>(this, descriptor, data[descriptor] || property.value);
+        Vue.set<this>(this, descriptor, data[descriptor] || this[descriptor]);
       });
     return this;
   }

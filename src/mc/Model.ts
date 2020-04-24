@@ -93,7 +93,7 @@ export class Model<D = TObject, SD = any, FO = TObject, DO = TObject>
       data[key] = this.mutation(key, mutations[key]);
     });
 
-    return (TypeHelper.isEmpty(mutations) ? Object.values(this) : data) as SD;
+    return (TypeHelper.isEmpty(data) ? this : data) as SD;
   }
 
   get hasError(): boolean {

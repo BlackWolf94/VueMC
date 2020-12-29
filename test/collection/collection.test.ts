@@ -55,7 +55,4 @@ describe('Collection', function() {
     expect(collection.metaInfo).toBe('Meta Info');
     expect((collection as any).otherField).toBeUndefined();
   });
-
-
-
 });

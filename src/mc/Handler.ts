@@ -2,39 +2,34 @@
  * @author Dimitry Zataidukh
  * @created_at 11/25/19
  */
-/* tslint:disable:no-console */
+import { Base } from './Base';
 
-const isDev = process.env.NODE_ENV !== 'production';
+type TBehaviourOption = {
+    before?: string;
+    after?: string;
+    onError?: string;
+}
 
-export function ExceptionHandler() {
-  return (target: any, key: string, descriptor: TypedPropertyDescriptor<any>): any => {
-    const method: Function = descriptor.value;
+const pipe = function(this: any, callbacks: Function | Function[]) {
+    if (!callbacks) return;
+    callbacks = Array.isArray(callbacks) ? callbacks : [callbacks];
+    const _self = this;
+    return callbacks.reduce<any>(async (res, callback) => callback.apply(_self, [await res]), null);
+};
 
-    /**
-     * @this any
-     */
-    descriptor.value = async function() {
-      if (isDev) {
-        console.time(`${this.constructor.name}: ${key}`);
-      }
-      try {
-        (this as any).before();
-        const res = await method.apply(this, arguments);
-        (this as any).after();
+export function HooksBehaviour<T>({ before, after, onError = 'onError' }: TBehaviourOption = {}) {
+    return (target: any, key: string, descriptor: TypedPropertyDescriptor<any>): any => {
+        const originMethod = descriptor.value;
 
-        if (isDev) {
-          console.timeEnd(`${this.constructor.name}: ${key}`);
-        }
-
-        return res;
-      } catch (e) {
-        if (isDev) {
-          console.timeEnd(`${this.constructor.name}: ${key}`);
-        }
-        (this as any).after();
-        (this as any).onError(e);
-      }
+        descriptor.value = async function(this: Base<any, any>) {
+            try {
+                await pipe.apply(this, [this[before]]);
+                await originMethod.apply(this, arguments);
+                await pipe.apply(this, [this[after]]);
+            } catch (exception) {
+                this[onError].apply(this, [exception]);
+            }
+        };
+        return descriptor;
     };
-    return descriptor;
-  };
 }

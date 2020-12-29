@@ -5,7 +5,6 @@
  */
 
 
-
 import { TaskModel } from '../../src/sample/Task.model';
 import { ValidateException } from '../../src';
 
@@ -46,6 +45,6 @@ describe('Model: validation', function() {
     const model = new TaskModel();
     model.title = 'Test task title';
     model.description = 'Todo description';
-    expect<boolean>(await model.save()).toBeTruthy();
+    expect(model.save()).resolves.not.toThrow();
   });
 });

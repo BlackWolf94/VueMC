@@ -27,8 +27,7 @@ describe('Model:api', () => {
         });
       },
     });
-
-    expect(await model.save()).toBeTruthy();
+    await model.save();
     expect<boolean>(model.loading).toBeFalsy();
     expect<boolean>(model.isNew).toBeFalsy();
   });
@@ -55,9 +54,9 @@ describe('Model:api', () => {
         });
       },
     });
-
-    expect(await model.save()).toBeTruthy();
-    expect<boolean>(model.loading).toBeFalsy();
+    await model.save();
+    // expect().toBeTruthy();
+    expect<boolean>(model.saving).toBeFalsy();
     expect<boolean>(model.isNew).toBeFalsy();
   });
 

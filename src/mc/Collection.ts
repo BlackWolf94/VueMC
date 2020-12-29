@@ -1,5 +1,5 @@
 /**
- * @author Dmitro Zataidukh
+ * @author Dmitriy Zataidukh
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
@@ -8,11 +8,10 @@ import { ICollectionApiProvider, TObject } from '../types';
 import Vue from 'vue';
 import { Model } from './Model';
 import TypeHelper from '@zidadindimon/js-typehelper';
-import { ExceptionHandler } from './Handler';
-import Timeout = NodeJS.Timeout;
+import { HooksBehaviour } from './Handler';
 
 export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICollectionApiProvider<T, F, D>> {
-  protected _timerId: Timeout;
+  protected _timerId: number;
   protected _models: M[] = [];
   protected _pages: number = 0;
   protected _total: number = 0;
@@ -135,9 +134,11 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
     this.clear();
   }
 
-  protected beforeFetch(): void | Promise<void> {}
+  protected beforeFetch(): void | Promise<void> {
+  }
 
-  protected afterFetch(): void | Promise<void> {}
+  protected afterFetch(): void | Promise<void> {
+  }
 
   protected init(data: D) {
     if (!TypeHelper.isObject(data)) {
@@ -147,40 +148,36 @@ export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICo
     const descriptors = Object.getOwnPropertyDescriptors(this);
 
     Object.keys(descriptors)
-      .filter(descriptor => !descriptor.match(/^_.*$/gm))
-      .forEach(descriptor => {
-        Vue.set<this>(this, descriptor, data[descriptor] || this[descriptor]);
-      });
+        .filter(descriptor => !descriptor.match(/^_.*$/gm))
+        .forEach(descriptor => {
+          Vue.set<this>(this, descriptor, data[descriptor] || this[descriptor]);
+        });
     return this;
   }
 
-  @ExceptionHandler()
-  protected async fetchList(): Promise<this> {
-    const method = this.getApiProvideMethod('fetch');
+  @HooksBehaviour({
+    before: 'toggleLoading',
+    after: 'toggleLoading',
+  })
+  protected async fetchList(): Promise<void> {
+    this._error = null;
     await this.beforeFetch();
+    const method = this.getApiProvideMethod('fetch');
     const { content, pages, size, total, data } = await method.call(this, this._filterOpt);
     this._pages = pages;
     this._total = total || pages * (size || (this._filterOpt as any).size);
     this.init(data);
     this.replace(content);
     await this.afterFetch();
-    return this;
   }
 
-  fetch(filters?: Partial<F>): Promise<this> {
+  fetch(filters?: Partial<F>): Promise<void> {
     this.setFilterOpt(filters);
-    return this.fetchList();
-  }
-
-  autoFetch(filters: F, interval: number) {
-    this.setFilterOpt(filters);
-    if (process.env.VUE_ENV === 'client' && interval) {
-      this._timerId = setInterval(this.fetchList.bind(this), interval);
-    }
     return this.fetchList();
   }
 
   protected onError(exception: Error) {
+    this.toggleLoading(false);
     this._error = exception.message;
     super.onError(exception);
   }

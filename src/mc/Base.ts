@@ -58,4 +58,9 @@ export abstract class Base<E, A> implements IBase<A> {
 
     return method;
   }
+
+  protected toggleLoading(loading?: boolean): this {
+    this._loading = loading === undefined ? !this._loading : loading;
+    return this;
+  }
 }

@@ -27,11 +27,22 @@
   "devDependencies": {
     "@types/core-js": "~2.5.3",
     "@types/jest": "~25.2.3",
+    "@types/node": "~13.13.*",
+    "@typescript-eslint/eslint-plugin": "^4.18.0",
+    "@typescript-eslint/parser": "^4.18.0",
+    "@zidadindimon/js-typehelper": "^1.0.17",
     "copyfiles": "~2.4.1",
     "docsify-cli": "~4.4.0",
     "docts": "~0.2.0",
+    "eslint": "^7.22.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-config-prettier": "7.2.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "faker": "~4.1.0",
     "jest": "~25.5.4",
+    "jest-html-reporters": "^2.1.2",
     "prettier": "^1.19.1",
     "rimraf": "^3.0.2",
     "tplant": "^2.3.3",
@@ -41,8 +52,6 @@
     "typedoc": "^0.17.4",
     "typedoc-markdown-theme": "0.0.4",
     "typescript": "3.5.3",
-    "@types/node": "~13.13.*",
-    "@zidadindimon/js-typehelper": "^1.0.17",
     "vue": "^2.6.11"
   }
 }

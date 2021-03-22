@@ -3,35 +3,45 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { IModelApiProvider, Model, TMutations, TRules } from '../index';
+import { AbstractModel, ModelApiProvider, MutationList, RuleList } from '../index';
+import { Model } from '../mc/AbstractModel';
 
-export type TTaskInitData = {
-  id?: number;
-  title?: string;
-  description?: string;
-  createdAt?: number;
-  done?: boolean;
-  data?: any;
-  author?: {
-    firstName: string;
-    lastName: string;
-  };
+export type TaskInitData = {
+	id?: number;
+	title?: string;
+	description?: string;
+	createdAt?: number;
+	done?: boolean;
+	data?: any;
+	author?: {
+		firstName: string;
+		lastName: string;
+	};
 };
 
-export type TTaskFetchOpt = {
-  id: number;
+export type TaskFetchOpt = {
+	id: number;
 };
 
-export type TTaskDelOpt = {
-  id: number;
+export type TaskDelOpt = {
+	id: number;
 };
 
-export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt, TTaskDelOpt> {
+export interface Task extends Model {
+	id: number;
+	title: string;
+	description: string;
+	createdAt: Date;
+	done: boolean;
+	author: string;
+}
+
+export class TaskModel extends AbstractModel<TaskInitData, TaskInitData, TaskFetchOpt, TaskDelOpt> {
   /**
-   * @comment enable validation before save/update
+   * @comment enable validation before a save/update
    * @default true
    */
-  protected _validationBeforeSave = true;
+  protected validationBeforeSave = true;
 
   /**
    * @comment attribute for model
@@ -51,13 +61,10 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   }
 
   /**
-   * @comment mutate initial data before apply to model
+   * @comment configure delete filter options
    */
-  protected mutations(data: TTaskInitData): TMutations<TaskModel> {
-    return {
-      createdAt: () => new Date(data.createdAt),
-      author: () => (data.author ? `${data.author.firstName} ${data.author.lastName}` : ''),
-    };
+  protected get deleteOptions(): TaskDelOpt {
+    return { id: this.id };
   }
 
   /**
@@ -70,46 +77,35 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   /**
    * @comment rule for validate model before save/update
    */
-  rules(): TRules<TaskModel> {
+  rules(): RuleList<Task> {
     return {
       title: [v => !!v || 'Title can`t be empty'],
-      description: [
-        v => !!v || 'Description can`t be empty',
-        v => v.length > 15 || 'Description must be more 15 symbols',
-      ],
+      description: [v => !!v || 'Description can`t be empty', v => v.length > 15 || 'Description must be more 15 symbols'],
     };
   }
 
   /**
-   * @comment mutate data before save/update
+   * @comment mutate initial data before apply to model
+   */
+  protected mutations(data: TaskInitData): MutationList<Task> {
+    return {
+      createdAt: () => new Date(data.createdAt),
+      author: () => (data.author ? `${data.author.firstName} ${data.author.lastName}` : ''),
+    };
+  }
+
+  /**
+   * @comment mutate data before the save/update
    * if method return null - then return model public data
    * @default method empty
    */
-  protected mutateBeforeSave(): TMutations<TTaskInitData> {
+  protected mutateBeforeSave(): MutationList<TaskInitData> {
     return {
       id: this.id,
       title: this.title,
       description: this.description,
       done: this.done,
       createdAt: () => this.createdAt.valueOf(),
-    };
-  }
-
-  /**
-   * @comment configure api method
-   */
-  protected api(): IModelApiProvider<TTaskInitData, TTaskInitData, TTaskFetchOpt, TTaskDelOpt> {
-    return {
-      async fetch(data?: TTaskFetchOpt): Promise<TTaskInitData> {
-        return {
-          id: data.id,
-          title: `Task #${data.id}`,
-          description: 'Description of task',
-        };
-      },
-      async save(data?: TTaskInitData): Promise<any> {},
-      async update(data?: TTaskInitData): Promise<any> {},
-      async delete(data?: TTaskDelOpt): Promise<any> {},
     };
   }
 
@@ -149,9 +145,20 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   }
 
   /**
-   * @comment configure delete filter options
+   * @comment configure api method
    */
-  protected get deleteOptions(): TTaskDelOpt {
-    return { id: this.id };
+  protected api(): ModelApiProvider<TaskInitData, TaskInitData, TaskFetchOpt, TaskDelOpt> {
+    return {
+      async fetch(data?: TaskFetchOpt): Promise<TaskInitData> {
+        return {
+          id: data.id,
+          title: `Task #${data.id}`,
+          description: 'Description of task',
+        };
+      },
+      async save(data?: TaskInitData): Promise<any> {},
+      async update(data?: TaskInitData): Promise<any> {},
+      async delete(data?: TaskDelOpt): Promise<any> {},
+    };
   }
 }

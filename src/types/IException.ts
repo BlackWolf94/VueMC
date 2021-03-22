@@ -3,9 +3,8 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/3/20
  */
-import { TObject } from './IMC';
 
-export type TModelError = {
+export interface ModelErrors<M> {
   model: string;
-  attrs: TObject<string>;
-};
+  attrs: Record<keyof M, string>;
+}

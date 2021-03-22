@@ -4,21 +4,19 @@
  * @createdAt 4/8/20
  */
 
-import { TaskModel, TTaskDelOpt, TTaskInitData } from '../../src/sample/Task.model';
+import { TaskDelOpt, TaskInitData, TaskModel } from '../../src/sample/Task.model';
 import { ConfigureApiException } from '../../src';
 
-
 describe('Model:api', () => {
-
   it('should be save success', async function() {
     const model = new TaskModel();
     model.title = 'Test task title';
     model.description = 'Todo description';
 
     model.useApi({
-      async save(data?: TTaskInitData): Promise<any> {
+      async save(data?: TaskInitData): Promise<any> {
         expect<boolean>(model.isNew).toBeTruthy();
-        expect<TTaskInitData>(data).toStrictEqual({
+        expect<TaskInitData>(data).toStrictEqual({
           id: model.id,
           title: model.title,
           description: model.description,
@@ -33,43 +31,48 @@ describe('Model:api', () => {
   });
 
   it('should be update success', async function() {
-    const model = new TaskModel();
-    model.init({
-      title: 'Test task title',
-      description: 'Todo description',
-      done: false,
-    }, false);
+                                                    const model = new TaskModel();
+                                                    model.init(
+                                                      {
+                                                        title: 'Test task title',
+                                                        description: 'Todo description',
+                                                        done: false,
+                                                      },
+                                                      false,
+                                                    );
 
-    model.done = true;
+                                                    model.done = true;
 
-    model.useApi({
-      async update(data?: TTaskInitData): Promise<any> {
-        expect<boolean>(model.isNew).toBeFalsy();
-        expect<TTaskInitData>(data).toStrictEqual({
-          id: model.id,
-          title: model.title,
-          description: model.description,
-          done: model.done,
-          createdAt: model.createdAt.valueOf(),
-        });
-      },
-    });
-    await model.save();
-    // expect().toBeTruthy();
-    expect<boolean>(model.saving).toBeFalsy();
-    expect<boolean>(model.isNew).toBeFalsy();
-  });
-
+                                                    model.useApi({
+                                                      async update(data?: TaskInitData): Promise<any> {
+                                                        expect<boolean>(model.isNew).toBeFalsy();
+                                                        expect<TaskInitData>(data).toStrictEqual({
+                                                          id: model.id,
+                                                          title: model.title,
+                                                          description: model.description,
+                                                          done: model.done,
+                                                          createdAt: model.createdAt.valueOf(),
+                                                        });
+                                                      },
+                                                    });
+                                                    await model.save();
+                                                    // expect().toBeTruthy();
+                                                    expect<boolean>(model.saving).toBeFalsy();
+                                                    expect<boolean>(model.isNew).toBeFalsy();
+                                                  });
 
   it('should be delete success', async function() {
     const model = new TaskModel();
-    model.init({
-      id: 1,
-    }, false);
+    model.init(
+        {
+          id: 1,
+        },
+        false,
+    );
 
     model.useApi({
-      async delete(data?: TTaskDelOpt): Promise<any> {
-        expect<TTaskInitData>(data).toStrictEqual({ id: model.id });
+      async delete(data?: TaskDelOpt): Promise<any> {
+        expect<TaskInitData>(data).toStrictEqual({ id: model.id });
       },
     });
 
@@ -85,9 +88,7 @@ describe('Model:api', () => {
     expect(model.id).toBe(id);
     expect(model.title).toBe(`Task #${id}`);
     expect<boolean>(model.loading).toBeFalsy();
-
   });
-
 
   it('should be configure exception', async function() {
     const model = new TaskModel();

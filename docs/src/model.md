@@ -3,7 +3,7 @@
 Consider the following model as an example:
 ```typescript
 
-import { IModelApiProvider, Model, TMutations, TRules } from '@zidadindimon/vue-mc';
+import { IModelApiProvider, AbstarctModel, TMutations, TRules } from '@zidadindimon/vue-mc';
 
 export type TTaskInitData = {
   id?: number;
@@ -27,8 +27,8 @@ export type TTaskDelOpt = {
   id: number;
 }
 
-export class TaskModel extends Model<TTaskInitData, TTaskSaveData, TTaskFetchOpt, TTaskDelOpt> {
-  /**
+export class TaskModel extends AbstarctModel<TTaskInitData, TTaskSaveData, TTaskFetchOpt, TTaskDelOpt> {
+    /**
    * @comment enable validation before save/update
    * @default true
    */
@@ -168,15 +168,16 @@ export class TaskModel extends Model<TTaskInitData, TTaskSaveData, TTaskFetchOpt
 
 Розглянемо клас `TaskModel` 
 ```typescript
-export class TaskModel extends Model<TTaskInitData, TTaskSaveData, TTaskFetchOpt, TTaskDelOpt> {
-/**
+export class TaskModel extends AbstarctModel<TTaskInitData, TTaskSaveData, TTaskFetchOpt, TTaskDelOpt> {
+    /**
  * other code here
  */  
 }
 ```
 
-When extends the `Model` class, it is advisable to specify generic types. 
-They are responsible for the following:  
+When extends the `AbstarctModel` class, it is advisable to specify generic types. They are responsible for the
+following:
+
 * D - interface for initial data, or output data of `fetch` method
 * SD - interface for input data that use when model save or update   
 * FO - interface for input data that use method `fetch` 
@@ -249,8 +250,8 @@ Computed value in model is a simply getter
 ```
 
 # GRUD operation 
- 
-Api of `Model` provide next api operation:
+
+Api of `AbstarctModel` provide next api operation:
 * `fetch` - initialize model from some source
 * `save` - create new record on some source    
 * `update` - update record on some source
@@ -448,7 +449,7 @@ If call save method and validation failed than method throw `ValidateException`;
 
 Get validation error:  
 ```typescript
-console.log(model.error) // Model error obj -> {model: Error message for oll model, attrs: {[attributeName]: errorMessage}} 
+console.log(model.error) // AbstarctModel error obj -> {model: Error message for oll model, attrs: {[attributeName]: errorMessage}} 
 ```
 
 if you want disable validation before save or update use next:

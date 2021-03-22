@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /**
  * @author Dmitro Zataidukh
  * @email zidadindimon@gmail.com

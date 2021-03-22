@@ -4,17 +4,17 @@
  * @createdAt 4/11/20
  */
 
-export type TFetchResp<M, D = TObject> = {
+export interface CollectionFetchResponse<M, D = Record<string, any>> {
   content: M[];
   pages: number;
   page?: number;
   size?: number;
   total?: number;
   data?: D;
-};
+}
 
-export interface ICollectionApiProvider<T, F = TObject, D = TObject> {
-  fetch(filter?: F): Promise<TFetchResp<T, D>>;
+export interface CollectionApiProvider<Model, FetchData = Record<string, any>, Meta = Record<string, any>> {
+  fetch(filter?: FetchData): Promise<CollectionFetchResponse<Model, Meta>>;
 }
 
 export interface IBase<A> {
@@ -25,25 +25,29 @@ export interface IBase<A> {
   useApi(apiProvider: Partial<A>): this;
 }
 
-export type TMutation<T> = (value?: T) => T;
+export type Mutation<T> = (value?: T) => T;
 
-export type TMutations<T> = {
-  [P in keyof T]?: TMutation<T[P]> | T[P];
+export type MutationList<T> = {
+  [P in keyof T]?: Mutation<T[P]> | T[P];
 };
 
-export type TObject<T = any> = {
-  [key: string]: T;
+export type RuleItem<T> = (val: T) => boolean | string;
+
+export type RuleList<T> = {
+  [P in keyof T]?: RuleItem<T[P]>[];
 };
 
-export type TRule<T> = (val: T) => boolean | string;
+export interface ModelApiProvider<
+  PostData = Record<string, any>,
+  FetchData = Record<string, any>,
+  FetchOpt = Record<string, any>,
+  DeleteOpt = Record<string, any>
+> {
+  fetch?(data?: FetchOpt): Promise<FetchData>;
 
-export type TRules<T> = {
-  [P in keyof T]?: TRule<T[P]>[];
-};
+  save?(data?: PostData): Promise<any>;
 
-export interface IModelApiProvider<PD = TObject, FD = TObject, FO = TObject, DO = TObject> {
-  fetch?(data?: FO): Promise<FD>;
-  save?(data?: PD): Promise<any>;
-  update?(data?: PD): Promise<any>;
-  delete?(data?: DO): Promise<any>;
+  update?(data?: PostData): Promise<any>;
+
+  delete?(data?: DeleteOpt): Promise<any>;
 }

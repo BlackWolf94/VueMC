@@ -3,182 +3,181 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { Base } from './Base';
-import { ICollectionApiProvider, TObject } from '../types';
 import Vue from 'vue';
-import { Model } from './Model';
 import TypeHelper from '@zidadindimon/js-typehelper';
+import { AbstractObject } from './AbstractObject';
+import { CollectionApiProvider } from '../types';
+import { AbstractModel } from './AbstractModel';
 import { HooksBehaviour } from './Handler';
 
-export class Collection<M, T, F = TObject, D = TObject> extends Base<string, ICollectionApiProvider<T, F, D>> {
-  protected _timerId: number;
-  protected _models: M[] = [];
-  protected _pages: number = 0;
-  protected _total: number = 0;
-  private _filterOpt: F = null;
+export class Collection<M, T, F = Record<string, any>, D = Record<string, any>> extends AbstractObject<string, CollectionApiProvider<T, F, D>> {
+         protected _models: M[] = [];
 
-  selected: M = null;
+         protected _pages: number = 0;
 
-  [Symbol.iterator](): IterableIterator<M> {
-    return this._models[Symbol.iterator]();
-  }
+         protected _total: number = 0;
 
-  get length() {
-    return this._models.length;
-  }
+         private _filterOpt: F = null;
 
-  get errors(): string {
-    return this._error;
-  }
+         selected: M = null;
 
-  get pages(): number {
-    return this._pages;
-  }
+         [Symbol.iterator](): IterableIterator<M> {
+           return this._models[Symbol.iterator]();
+         }
 
-  get total(): number {
-    return this._total;
-  }
+         get length(): number {
+           return this._models.length;
+         }
 
-  get filterOpt(): Readonly<F> {
-    return this._filterOpt;
-  }
+         get errors(): string {
+           return this.dataErrors;
+         }
 
-  clear(): this {
-    this._models = []
-    return this;
-  }
+         get pages(): number {
+           return this._pages;
+         }
 
-  private addItem(item: T | M) {
-    this._models.push(this.initModel(item));
-    return this;
-  }
+         get total(): number {
+           return this._total;
+         }
 
-  add(items: Array<T | M> | T | M): this {
-    items = Array.isArray(items) ? items : [items];
-    items.forEach(this.addItem.bind(this));
-    return this;
-  }
+         get filterOpt(): Readonly<F> {
+           return this._filterOpt;
+         }
 
-  replace(items: Array<T | M> | T | M): this {
-    return this.clear().add(items);
-  }
+         clear(): this {
+           this._models = [];
+           return this;
+         }
 
-  protected model(item?: T | M): { new (): M } {
-    return null;
-  }
+         private addItem(item: T | M) {
+           this._models.push(this.initModel(item));
+           return this;
+         }
 
-  protected onModelInit(model: M): this {
-    return this;
-  }
+         add(items: Array<T | M> | T | M): this {
+           items = Array.isArray(items) ? items : [items];
+           items.forEach(this.addItem.bind(this));
+           return this;
+         }
 
-  protected initModel(item: T | M): M {
-    const modelClass: { new (): M } = this.model(item);
-    if ((item as M) instanceof Model || !modelClass) {
-      return item as M;
-    }
-    const model: M = new modelClass();
-    (model as any).init(item, false);
-    this.onModelInit(model as M);
-    return model;
-  }
+         replace(items: Array<T | M> | T | M): this {
+           return this.clear().add(items);
+         }
 
-  getItems(): M[] {
-    return this._models;
-  }
+         protected model(item?: T | M): { new (): M } {
+           return null;
+         }
 
-  get(index: number): M {
-    return this._models[index];
-  }
+         protected onModelInit(model: M): this {
+           return this;
+         }
 
-  first(): M {
-    return this._models.length ? this._models[0] : null;
-  }
+         protected initModel(item: T | M): M {
+           const modelClass: { new (): M } = this.model(item);
+           if ((item as M) instanceof AbstractModel || !modelClass) {
+             return item as M;
+           }
+           const model: M = new modelClass();
+           (model as any).init(item, false);
+           this.onModelInit(model as M);
+           return model;
+         }
 
-  last(): M {
-    const { length } = this._models;
-    return length ? this._models[length - 1] : null;
-  }
+         getItems(): M[] {
+           return this._models;
+         }
 
-  remove(el: Array<number | M> | number | M): this {
-    const arr = Array.isArray(el) ? el : [el];
-    arr.forEach(this.removeItem.bind(this));
-    return this;
-  }
+         get(index: number): M {
+           return this._models[index];
+         }
 
-  select(index: number): this {
-    this.selected = this._models[index] || null;
-    return this;
-  }
+         first(): M {
+           return this._models.length ? this._models[0] : null;
+         }
 
-  protected removeItem(el: number | M) {
-    const index: number = TypeHelper.isNumber(el) ? (el as number) : this._models.findIndex(model => model === el);
-    this._models.splice(index, 1);
-    return this.replace(this._models);
-  }
+         last(): M {
+           const { length } = this._models;
+           return length ? this._models[length - 1] : null;
+         }
 
-  protected defFilterOpt(): F {
-    return {} as F;
-  }
+         remove(el: Array<number | M> | number | M): this {
+           const arr = Array.isArray(el) ? el : [el];
+           arr.forEach(this.removeItem.bind(this));
+           return this;
+         }
 
-  protected setFilterOpt(filterOpt: Partial<F>) {
-    Vue.set(this, '_filterOpt', {
-      ...this.defFilterOpt(),
-      ...this._filterOpt,
-      ...filterOpt,
-    });
-    return this;
-  }
+         select(index: number): this {
+           this.selected = this._models[index] || null;
+           return this;
+         }
 
-  destruct(): void {
-    clearInterval(this._timerId);
-    this.clear();
-  }
+         protected removeItem(el: number | M) {
+           const index: number = TypeHelper.isNumber(el) ? (el as number) : this._models.findIndex(model => model === el);
+           this._models.splice(index, 1);
+           return this.replace(this._models);
+         }
 
-  protected beforeFetch(): void | Promise<void> {
-  }
+         protected defFilterOpt(): F {
+           return {};
+         }
 
-  protected afterFetch(): void | Promise<void> {
-  }
+         protected setFilterOpt(filterOpt: Partial<F>): this {
+           Vue.set(this, '_filterOpt', {
+             ...this.defFilterOpt(),
+             ...this._filterOpt,
+             ...filterOpt,
+           });
+           return this;
+         }
 
-  protected init(data: D) {
-    if (!TypeHelper.isObject(data)) {
-      console.warn(`[${this.constructor.name}]: initAttributes data is not object`);
-      return this;
-    }
-    const descriptors = Object.getOwnPropertyDescriptors(this);
+         destruct(): void {
+           this.clear();
+         }
 
-    Object.keys(descriptors)
-        .filter(descriptor => !descriptor.match(/^_.*$/gm))
-        .forEach(descriptor => {
-          Vue.set<this>(this, descriptor, data[descriptor] || this[descriptor]);
-        });
-    return this;
-  }
+         protected beforeFetch(): void | Promise<void> {}
 
-  @HooksBehaviour({
-    before: 'toggleLoading',
-    after: 'toggleLoading',
-  })
-  protected async fetchList(): Promise<void> {
-    this._error = null;
-    await this.beforeFetch();
-    const method = this.getApiProvideMethod('fetch');
-    const { content, pages, size, total, data } = await method.call(this, this._filterOpt);
-    this._pages = pages;
-    this._total = total || pages * (size || (this._filterOpt as any).size);
-    this.init(data);
-    this.replace(content);
-    await this.afterFetch();
-  }
+         protected afterFetch(): void | Promise<void> {}
 
-  fetch(filters?: Partial<F>): Promise<void> {
-    this.setFilterOpt(filters);
-    return this.fetchList();
-  }
+         protected init(data: D): this {
+           if (!TypeHelper.isObject(data)) {
+             console.warn(`[${this.constructor.name}]: initAttributes data is not object`);
+             return this;
+           }
+           const descriptors = Object.getOwnPropertyDescriptors(this);
 
-  protected onError(exception: Error) {
-    this.toggleLoading(false);
-    this._error = exception.message;
-    super.onError(exception);
-  }
-}
+           Object.keys(descriptors)
+             .filter(descriptor => !descriptor.match(/^_.*$/gm))
+             .forEach(descriptor => {
+               Vue.set<this>(this, descriptor, data[descriptor] || this[descriptor]);
+             });
+           return this;
+         }
+
+         @HooksBehaviour({
+           before: 'toggleLoading',
+           after: 'toggleLoading',
+         })
+         protected async fetchList(): Promise<void> {
+           this.dataErrors = null;
+           await this.beforeFetch();
+           const method = this.getApiProvideMethod('fetch');
+           const { content, pages, size, total, data } = await method.call(this, this._filterOpt);
+           this._pages = pages;
+           this._total = total || pages * (size || (this._filterOpt as any).size);
+           this.init(data);
+           this.replace(content);
+           await this.afterFetch();
+         }
+
+         fetch(filters?: Partial<F>): Promise<void> {
+           this.setFilterOpt(filters);
+           return this.fetchList();
+         }
+
+         protected onError(exception: Error) {
+           this.toggleLoading(false);
+           this.dataErrors = exception.message;
+           super.onError(exception);
+         }
+       }

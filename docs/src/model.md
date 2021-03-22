@@ -29,7 +29,7 @@ export type TTaskDelOpt = {
 
 export class TaskModel extends AbstarctModel<TTaskInitData, TTaskSaveData, TTaskFetchOpt, TTaskDelOpt> {
     /**
-   * @comment enable validation before save/update
+     * @comment enable validation before save/update
    * @default true
    */
   protected _validationBeforeSave = true;
@@ -170,7 +170,7 @@ export class TaskModel extends AbstarctModel<TTaskInitData, TTaskSaveData, TTask
 ```typescript
 export class TaskModel extends AbstarctModel<TTaskInitData, TTaskSaveData, TTaskFetchOpt, TTaskDelOpt> {
     /**
- * other code here
+     * other code here
  */  
 }
 ```

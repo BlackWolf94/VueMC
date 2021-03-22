@@ -44,10 +44,7 @@ export interface ModelApiProvider<
   DeleteOpt = Record<string, any>
 > {
   fetch?(data?: FetchOpt): Promise<FetchData>;
-
   save?(data?: PostData): Promise<any>;
-
   update?(data?: PostData): Promise<any>;
-
   delete?(data?: DeleteOpt): Promise<any>;
 }

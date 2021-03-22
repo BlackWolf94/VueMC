@@ -15,25 +15,6 @@ export abstract class AbstractObject<E, A> implements IBase<A> {
 
   protected apiProvider: Partial<A> = null;
 
-  get hasError(): boolean {
-    return !!this.dataErrors;
-  }
-
-  get loading(): boolean {
-    return this.dataLoading;
-  }
-
-  abstract get errors(): E;
-
-  protected get getApiProvider(): Partial<A> {
-    return this.apiProvider || this.api() || {};
-  }
-
-  useApi(apiProvider: Partial<A>): this {
-    this.apiProvider = apiProvider;
-    return this;
-  }
-
   protected before(): void {
     this.dataLoading = true;
     this.dataErrors = null;
@@ -43,12 +24,31 @@ export abstract class AbstractObject<E, A> implements IBase<A> {
     this.dataLoading = false;
   }
 
-  protected api(): A {
-    return null;
+  abstract get errors(): E;
+
+  get hasError(): boolean {
+    return !!this.dataErrors;
   }
 
   protected onError(exception: Error): void {
     throw exception;
+  }
+
+  get loading(): boolean {
+    return this.dataLoading;
+  }
+
+  useApi(apiProvider: Partial<A>): this {
+    this.apiProvider = apiProvider;
+    return this;
+  }
+
+  protected api(): A {
+    return null;
+  }
+
+  protected get getApiProvider(): Partial<A> {
+    return this.apiProvider || this.api() || {};
   }
 
   protected getApiProvideMethod<K extends keyof A>(methodName: K): A[K] {

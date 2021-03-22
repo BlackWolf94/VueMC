@@ -13,8 +13,8 @@
     * [Validation](model.md?id=validation)
 
 * Collection
-  * [Usage](collection.md)
-  * [Api](collection.md)
+    * [Usage](collection.md)
+    * [Api](collection.md)
   
 * SSR
   * [Configuration](ssr/configuration.md)

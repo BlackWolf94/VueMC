@@ -1,5 +1,6 @@
 type MCConfig = {
-  debug: boolean;
-};
+    debug: boolean;
+
+}
 
 export const configureMcLib = (config: MCConfig) => {};

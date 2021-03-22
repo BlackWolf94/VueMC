@@ -24,9 +24,40 @@ export type TInitialData = {
 
 export class TodoListCollection extends Collection<TaskModel, TaskInitData, TTodoFilterOpt, TInitialData> {
   /**
+   * @comment set model that use in collection
+   */
+  protected model(item?: TaskInitData | TaskModel): { new (): TaskModel } {
+    return TaskModel;
+  }
+
+  /**
    * @comment custom value
    */
   metaInfo: string = null;
+
+  /**
+   * @comment  configure api method
+   */
+  protected api(): CollectionApiProvider<TaskInitData, TTodoFilterOpt, TInitialData> {
+    return {
+      async fetch(filter?: TTodoFilterOpt): Promise<CollectionFetchResponse<TaskInitData, TInitialData>> {
+        return {
+          content: [],
+          pages: 0,
+        };
+      },
+    };
+  }
+
+  /**
+   * @default filter
+   */
+  protected defFilterOpt(): TTodoFilterOpt {
+    return {
+      page: 1,
+      size: 20,
+    };
+  }
 
   /**
    * @comment computed value
@@ -54,37 +85,6 @@ export class TodoListCollection extends Collection<TaskModel, TaskInitData, TTod
    */
   set page(page: number) {
     this.fetch({ page });
-  }
-
-  /**
-   * @comment set model that use in collection
-   */
-  protected model(item?: TaskInitData | TaskModel): { new (): TaskModel } {
-    return TaskModel;
-  }
-
-  /**
-   * @comment  configure api method
-   */
-  protected api(): CollectionApiProvider<TaskInitData, TTodoFilterOpt, TInitialData> {
-    return {
-      async fetch(filter?: TTodoFilterOpt): Promise<CollectionFetchResponse<TaskInitData, TInitialData>> {
-        return {
-          content: [],
-          pages: 0,
-        };
-      },
-    };
-  }
-
-  /**
-   * @default filter
-   */
-  protected defFilterOpt(): TTodoFilterOpt {
-    return {
-      page: 1,
-      size: 20,
-    };
   }
 
   /**

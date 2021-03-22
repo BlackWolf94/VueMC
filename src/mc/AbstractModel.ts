@@ -12,237 +12,233 @@ import { AbstractObject } from './AbstractObject';
 import { HooksBehaviour } from './Handler';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Model {
-}
+export interface Model {}
 
-export class AbstractModel<InitialData = Record<string, any> | any,
-    SaveData = any,
-    FetchOption = Record<string, any> | any,
-    DO = Record<string, any> | any> extends AbstractObject<ModelErrors<AbstractModel>, ModelApiProvider<SaveData, InitialData, FetchOption, DO>>
-    implements Model {
-  protected isNewForm: boolean = true;
-  protected dataAttrsErrors: Record<string, string> = {};
-  protected validationBeforeSave: boolean = true;
-  protected dataSaving: boolean = false;
-  protected deletingModel: boolean = false;
+export class AbstractModel<
+         InitialData = Record<string, any> | any,
+         SaveData = any,
+         FetchOption = Record<string, any> | any,
+         DO = Record<string, any> | any
+       > extends AbstractObject<ModelErrors<AbstractModel>, ModelApiProvider<SaveData, InitialData, FetchOption, DO>> implements Model {
+         // eslint-disable-next-line @typescript-eslint/no-shadow, prettier/prettier
+         static async fetch<T extends AbstractModel, FetchOpt = Record<string, any>>(params?: FetchOpt, isNew: boolean = false): Promise<T> {
+           const model: T = new this() as T;
+           await model.fetch(params, isNew);
+           return model;
+         }
 
-  constructor() {
-    super();
-    this.set({});
-  }
+         protected isNewForm: boolean = true;
 
-  get hasError(): boolean {
-    return !!Object.keys(this.dataAttrsErrors).length || !!this.dataErrors;
-  }
+         protected dataAttrsErrors: Record<string, string> = {};
 
-  get saving(): boolean {
-    return this.dataSaving;
-  }
+         protected validationBeforeSave: boolean = true;
 
-  get deleting(): boolean {
-    return this.deletingModel;
-  }
+         protected dataSaving: boolean = false;
 
-  get errors(): ModelErrors<this> {
-    return {
-      model: this.dataErrors,
-      attrs: this.dataAttrsErrors as Record<keyof this, string>,
-    };
-  }
+         protected deletingModel: boolean = false;
 
-  get isNew(): boolean {
-    return this.isNewForm;
-  }
+         constructor() {
+           super();
+           this.set({});
+         }
 
-  protected get deleteOptions(): DO {
-    throw new ConfigureApiException(this.constructor.name, 'deleteOptions');
-  }
+         rules<T extends Model>(): RuleList<T> {
+           return {};
+         }
 
-  protected set attrsError(value: Record<string, any>) {
-    Vue.set(this, 'dataAttrsErrors', value);
-  }
+         init(data?: InitialData, isNew: boolean = true): this {
+           this.set(data);
+           this.isNewForm = isNew;
+           this.onInit();
+           return this;
+         }
 
-  // eslint-disable-next-line @typescript-eslint/no-shadow, prettier/prettier
-  static async fetch<T extends AbstractModel, FetchOpt = Record<string, any>>(params?: FetchOpt, isNew: boolean = false): Promise<T> {
-    const model: T = new this() as T;
-    await model.fetch(params, isNew);
-    return model;
-  }
+         protected onInit(): void {}
 
-  rules<T extends Model>(): RuleList<T> {
-    return {};
-  }
+         private default(): Partial<this> {
+           const defaults: Partial<this> = {};
+           const descriptors = Object.getOwnPropertyDescriptors(this);
+           Object.keys(descriptors)
+             .filter(descriptor => !descriptor.match(/^_.*$/gm))
+             .forEach(descriptor => {
+               defaults[descriptor] = this[descriptor];
+             });
+           return defaults;
+         }
 
-  init(data?: InitialData, isNew: boolean = true): this {
-    this.set(data);
-    this.isNewForm = isNew;
-    this.onInit();
-    return this;
-  }
+         private mutation(key: string, mutation: any): any {
+           return TypeHelper.isFunction(mutation) ? mutation.call(this, this[key]) : mutation;
+         }
 
-  resetValidation(): this {
-    this.attrsError = null;
-    this.dataErrors = null;
-    return this;
-  }
+         protected mutations<T extends Model>(data: InitialData): MutationList<Model> {
+           return {};
+         }
 
-  validate(): boolean {
-    this.resetValidation();
-    const attrsErrors: { [key in keyof this]?: string } = {};
-    const attrsRules = this.rules();
+         protected set(data: any = {}): this {
+           const defaults = this.default();
+           const properties = { ...defaults, ...(data || {}) };
+           Object.keys(defaults).forEach(key => {
+             Vue.set(this, key, properties[key]);
+           });
 
-    Object.keys(attrsRules).forEach(key => {
-      const rules: RuleItem<keyof this>[] = attrsRules[key];
+           const mutations = this.mutations(data);
 
-      // eslint-disable-next-line no-restricted-syntax
-      for (const rule of rules) {
-        const error = rule.call(this, this[key]);
+           Object.keys(mutations).forEach((key: string) => {
+             Vue.set(this, key, this.mutation(key, mutations[key]));
+           });
 
-        if (TypeHelper.isString(error)) {
-          attrsErrors[key] = error;
-          break;
-        }
-      }
-    });
-    this.attrsError = attrsErrors;
+           return this;
+         }
 
-    return !this.hasError;
-  }
+         protected mutateBeforeSave(): MutationList<SaveData> {
+           return {};
+         }
 
-  @HooksBehaviour({
-    before: 'toggleLoading',
-    after: 'toggleLoading',
-  })
-  async fetch(filters?: FetchOption, isNew: boolean = false): Promise<void> {
-    this.dataErrors = null;
-    await this.beforeFetch();
-    const method = this.getApiProvideMethod('fetch');
-    this.init(await method.call(this, filters), isNew);
-    await this.onFetch();
-  }
+         protected get deleteOptions(): DO {
+           throw new ConfigureApiException(this.constructor.name, 'deleteOptions');
+         }
 
-  @HooksBehav iour({
-                     before: 'toggleDeleting',
-                     after: 'toggleDeleting',
-                   })
+         protected prepareForSave(): SaveData {
+           const mutations = this.mutateBeforeSave();
+           const data: Record<string, any> = {};
 
-  async delete(): Promise<void> {
-    this.dataErrors = null;
-    await this.beforeDelete();
-    const method = this.getApiProvideMethod('delete');
-    this.onDelete(await method.call(this, this.deleteOptions));
-  }
+           Object.keys(mutations).forEach((key: string) => {
+             data[key] = this.mutation(key, mutations[key]);
+           });
 
-  @HooksBehaviour({
-    before: 'toggleSaving',
-    after: 'toggleSaving',
-  })
-  async save(): Promise<void> {
-    this.dataErrors = null;
-    await this.beforeSave();
-    if (this.validationBeforeSave && !this.validate()) {
-      throw new ValidateException();
-    }
-    const method = this.getApiProvideMethod(this.isNew ? 'save' : 'update');
-    this.onSave(await method.call(this, this.prepareForSave()));
-    this.isNewForm = false;
-  }
+           return (TypeHelper.isEmpty(data) ? this : data) as SaveData;
+         }
 
-  protected onInit(): void {
-  }
+         get hasError(): boolean {
+           return !!Object.keys(this.dataAttrsErrors).length || !!this.dataErrors;
+         }
 
-  protected mutations<T extends Model>(data: InitialData): MutationList<Model> {
-    return {};
-  }
+         get saving(): boolean {
+           return this.dataSaving;
+         }
 
-  protected set(data: any = {}): this {
-    const defaults = this.default();
-    const properties = { ...defaults, ...(data || {}) };
-    Object.keys(defaults).forEach(key => {
-      Vue.set(this, key, properties[key]);
-    });
+         get deleting(): boolean {
+           return this.deletingModel;
+         }
 
-    const mutations = this.mutations(data);
+         resetValidation(): this {
+           this.attrsError = null;
+           this.dataErrors = null;
+           return this;
+         }
 
-    Object.keys(mutations).forEach((key: string) => {
-      Vue.set(this, key, this.mutation(key, mutations[key]));
-    });
+         protected set attrsError(value: Record<string, any>) {
+           Vue.set(this, 'dataAttrsErrors', value);
+         }
 
-    return this;
-  }
+         validate(): boolean {
+           this.resetValidation();
+           const attrsErrors: { [key in keyof this]?: string } = {};
+           const attrsRules = this.rules();
 
-  /* api block */
+           Object.keys(attrsRules).forEach(key => {
+             const rules: RuleItem<keyof this>[] = attrsRules[key];
 
-  protected mutateBeforeSave(): MutationList<SaveData> {
-    return {};
-  }
+             // eslint-disable-next-line no-restricted-syntax
+             for (const rule of rules) {
+               const error = rule.call(this, this[key]);
 
-  protected prepareForSave(): SaveData {
-    const mutations = this.mutateBeforeSave();
-    const data: Record<string, any> = {};
+               if (TypeHelper.isString(error)) {
+                 attrsErrors[key] = error;
+                 break;
+               }
+             }
+           });
+           this.attrsError = attrsErrors;
 
-    Object.keys(mutations).forEach((key: string) => {
-      data[key] = this.mutation(key, mutations[key]);
-    });
+           return !this.hasError;
+         }
 
-    return (TypeHelper.isEmpty(data) ? this : data) as SaveData;
-  }
+         get errors(): ModelErrors<this> {
+           return {
+             model: this.dataErrors,
+             attrs: this.dataAttrsErrors as Record<keyof this, string>,
+           };
+         }
 
-  protected beforeFetch(): void | Promise<void> {
-  }
+         get isNew(): boolean {
+           return this.isNewForm;
+         }
 
-  protected onFetch(): void | Promise<void> {
-  }
+         /* api block */
 
-  protected beforeDelete(): void | Promise<void> {
-  }
+         protected beforeFetch(): void | Promise<void> {}
 
-  protected beforeSave(): void | Promise<void> {
-  }
+         protected onFetch(): void | Promise<void> {}
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  protected onDelete(data?: any): void {
-  }
+         @HooksBehaviour({
+           before: 'toggleLoading',
+           after: 'toggleLoading',
+         })
+         async fetch(filters?: FetchOption, isNew: boolean = false): Promise<void> {
+           this.dataErrors = null;
+           await this.beforeFetch();
+           const method = this.getApiProvideMethod('fetch');
+           this.init(await method.call(this, filters), isNew);
+           await this.onFetch();
+         }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  protected onSave(data?: any): void {
-  }
+         protected beforeDelete(): void | Promise<void> {}
 
-  protected onError(exception: Error): void {
-    this.toggleSaving(false)
-        .toggleLoading(false)
-        .toggleDeleting(false);
+         @HooksBehaviour({
+           before: 'toggleDeleting',
+           after: 'toggleDeleting',
+         })
+         async delete(): Promise<void> {
+           this.dataErrors = null;
+           await this.beforeDelete();
+           const method = this.getApiProvideMethod('delete');
+           this.onDelete(await method.call(this, this.deleteOptions));
+         }
 
-    if (!(exception instanceof ValidateException)) {
-      this.dataErrors = exception.message;
-    }
-    super.onError(exception);
-  }
+         protected beforeSave(): void | Promise<void> {}
 
-  protected toggleSaving(saving?: boolean): this {
-    this.dataSaving = saving === undefined ? !this.dataSaving : saving;
-    return this;
-  }
+         @HooksBehaviour({
+           before: 'toggleSaving',
+           after: 'toggleSaving',
+         })
+         async save(): Promise<void> {
+           this.dataErrors = null;
+           await this.beforeSave();
+           if (this.validationBeforeSave && !this.validate()) {
+             throw new ValidateException();
+           }
+           const method = this.getApiProvideMethod(this.isNew ? 'save' : 'update');
+           this.onSave(await method.call(this, this.prepareForSave()));
+           this.isNewForm = false;
+         }
 
-  protected toggleDeleting(deleting?: boolean): this {
-    this.deletingModel = deleting === undefined ? !this.dataLoading : deleting;
-    return this;
-  }
+         // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+         protected onDelete(data?: any): void {}
 
-  private default(): Partial<this> {
-    const defaults: Partial<this> = {};
-    const descriptors = Object.getOwnPropertyDescriptors(this);
-    Object.keys(descriptors)
-        .filter(descriptor => !descriptor.match(/^_.*$/gm))
-        .forEach(descriptor => {
-          defaults[descriptor] = this[descriptor];
-        });
-    return defaults;
-  }
+         // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+         protected onSave(data?: any): void {}
 
-  private mutation(key: string, mutation: any): any {
-    return TypeHelper.isFunction(mutation) ? mutation.call(this, this[key]) : mutation;
-  }
+         protected onError(exception: Error): void {
+           this.toggleSaving(false)
+             .toggleLoading(false)
+             .toggleDeleting(false);
 
-  /* api block end */
-}
+           if (!(exception instanceof ValidateException)) {
+             this.dataErrors = exception.message;
+           }
+           super.onError(exception);
+         }
+
+         protected toggleSaving(saving?: boolean): this {
+           this.dataSaving = saving === undefined ? !this.dataSaving : saving;
+           return this;
+         }
+
+         protected toggleDeleting(deleting?: boolean): this {
+           this.deletingModel = deleting === undefined ? !this.dataLoading : deleting;
+           return this;
+         }
+
+         /* api block end */
+       }

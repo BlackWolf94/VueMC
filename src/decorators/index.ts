@@ -4,7 +4,7 @@
  * @created_at 11/25/19
  */
 
-import { CbFunction, Hook } from '../../types';
+import { CbFunction, Hook } from '../types';
 
 const pipe = async function (this: any, callbacks: CbFunction[]): Promise<void> {
   if (!callbacks) return;

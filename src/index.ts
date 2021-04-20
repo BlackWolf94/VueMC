@@ -1,5 +1,4 @@
-export { Model } from './mc/Model';
-export { Collection } from './mc/Collection';
-// export { ssrMCPlugin } from './mc/plugin';
-export * from './mc/Exception';
+export { Model } from './Model';
+export { Collection } from './Collection';
+export * from './exceptions';
 export * from './types';

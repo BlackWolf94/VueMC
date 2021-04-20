@@ -6,10 +6,11 @@
  */
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
-import { AnyRecord, ModelApiProvider, ModelErrors, MutationList, RuleItem, RuleList } from '../types';
+import { AnyRecord, ModelApiProvider, ModelErrors, MutationList, RuleItem, RuleList } from './types';
 import { Base } from './Base';
 import { BadConfigException, ValidateException } from './exceptions';
 import { UseHook } from './decorators';
+import { updateObjState, validateForm } from './helper';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Model {}
@@ -26,13 +27,11 @@ export class Model<D = Record<string, any>, SD = unknown, FO = Record<string, an
   implements Model {
   protected isNewForm = true;
 
-  protected dataAttrsErrors: Record<string, string> = {};
-
   protected validationBeforeSave = true;
 
-  protected dataSaving = false;
+  readonly saving: boolean = false;
 
-  protected deletingModel = false;
+  readonly deleting: boolean = false;
 
   constructor() {
     super();
@@ -40,23 +39,10 @@ export class Model<D = Record<string, any>, SD = unknown, FO = Record<string, an
   }
 
   get hasError(): boolean {
-    return !!Object.keys(this.dataAttrsErrors).length || !!this.dataErrors;
+    return !!Object.keys(this.errors.attrs).length || !!this.errors.model;
   }
 
-  get saving(): boolean {
-    return this.dataSaving;
-  }
-
-  get deleting(): boolean {
-    return this.deletingModel;
-  }
-
-  get errors(): ModelErrors<this> {
-    return {
-      model: this.dataErrors,
-      attrs: this.dataAttrsErrors as Record<keyof this, string>,
-    };
-  }
+  readonly errors: ModelErrors<this> = { model: null, attrs: null };
 
   get isNew(): boolean {
     return this.isNewForm;
@@ -66,17 +52,13 @@ export class Model<D = Record<string, any>, SD = unknown, FO = Record<string, an
     throw new BadConfigException(this.constructor.name, 'deleteOptions');
   }
 
-  protected set attrsError(value: Record<string, any>) {
-    Vue.set(this, 'dataAttrsErrors' as keyof Model, value);
-  }
-
   static async fetch<T extends Model, F = Record<string, any>>(params?: F, isNew = false): Promise<T> {
     const model: T = new this() as T;
     await model.fetch(params, isNew);
     return model;
   }
 
-  rules<T extends Model>(): RuleList<T> {
+  rules(): RuleList<any> {
     return {};
   }
 
@@ -87,32 +69,20 @@ export class Model<D = Record<string, any>, SD = unknown, FO = Record<string, an
     return this;
   }
 
-  resetValidation(): this {
-    this.attrsError = null;
-    this.dataErrors = null;
-    return this;
+  protected clearErrors() {
+    this.updateErrors({ model: null, attrs: null });
+  }
+
+  protected updateErrors(data: Partial<ModelErrors<this>>) {
+    updateObjState(this, 'errors', {
+      ...this.errors,
+      ...data,
+    } as ModelErrors<this>);
   }
 
   validate(): boolean {
-    this.resetValidation();
-    const attrsErrors: { [key in keyof this]?: string } = {};
-    const attrsRules = this.rules();
-
-    Object.keys(attrsRules).forEach((key) => {
-      const rules: RuleItem<keyof this>[] = attrsRules[key];
-
-      // eslint-disable-next-line no-restricted-syntax
-      for (const rule of rules) {
-        const error = rule.call(this, this[key]);
-
-        if (TypeHelper.isString(error)) {
-          attrsErrors[key] = error;
-          break;
-        }
-      }
-    });
-    this.attrsError = attrsErrors;
-
+    this.clearErrors();
+    this.updateErrors({ attrs: validateForm(this, this.rules()) });
     return !this.hasError;
   }
 
@@ -141,7 +111,7 @@ export class Model<D = Record<string, any>, SD = unknown, FO = Record<string, an
   }
 
   @UseHook<Model>({
-    before: ['toggleDeleting', 'clearErrors', ' beforeDelete'],
+    before: ['toggleDeleting', 'clearErrors', 'beforeDelete'],
     after: ['toggleDeleting'],
   })
   async delete(): Promise<void> {
@@ -164,7 +134,7 @@ export class Model<D = Record<string, any>, SD = unknown, FO = Record<string, an
 
   protected onInit(): void {}
 
-  protected mutations<T extends Model>(data: D): MutationList<Model> {
+  protected mutations<T extends Model>(data: D): MutationList<any> {
     return {};
   }
 
@@ -172,13 +142,13 @@ export class Model<D = Record<string, any>, SD = unknown, FO = Record<string, an
     const defaults = this.default();
     const properties = { ...defaults, ...(data || {}) };
     Object.keys(defaults).forEach((key) => {
-      Vue.set(this, key, properties[key]);
+      updateObjState(this, key as any, properties[key]);
     });
 
     const mutations = this.mutations(data as any);
 
     Object.keys(mutations).forEach((key: string) => {
-      Vue.set(this, key, this.mutation(key, mutations[key]));
+      updateObjState(this, key as any, this.mutation(key, mutations[key]));
     });
 
     return this;
@@ -215,18 +185,18 @@ export class Model<D = Record<string, any>, SD = unknown, FO = Record<string, an
     this.toggleSaving(false).toggleLoading(false).toggleDeleting(false);
 
     if (!(exception instanceof ValidateException)) {
-      this.dataErrors = exception.message;
+      this.updateErrors({ model: exception.message });
     }
     super.onError(exception);
   }
 
   protected toggleSaving(saving?: boolean): this {
-    this.dataSaving = saving === undefined ? !this.dataSaving : saving;
+    updateObjState(this, 'saving', saving === null ? !this.saving : saving);
     return this;
   }
 
   protected toggleDeleting(deleting?: boolean): this {
-    this.deletingModel = deleting === undefined ? !this.dataLoading : deleting;
+    updateObjState(this, 'deleting', deleting === null ? !this.loading : deleting);
     return this;
   }
 

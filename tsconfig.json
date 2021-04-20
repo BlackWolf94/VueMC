@@ -45,6 +45,7 @@
     "node_modules",
     "test",
     "lib",
+    "test/mock/*",
     "./node_modules/@babel/types/lib/index.d.ts"
   ]
 }

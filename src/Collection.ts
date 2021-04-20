@@ -9,9 +9,10 @@
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
 import { Base } from './Base';
-import { AnyRecord, CollectionApiProvider } from '../types';
+import { AnyRecord, CollectionApiProvider } from './types';
 import { Model } from './Model';
-import { UseHook } from './decarators';
+import { UseHook } from './decorators';
+import { updateObjState } from './helper';
 
 export class Collection<M, T, F = AnyRecord, D = AnyRecord> extends Base<string, CollectionApiProvider<T, F, D>> {
   selected: M = null;
@@ -22,7 +23,7 @@ export class Collection<M, T, F = AnyRecord, D = AnyRecord> extends Base<string,
 
   protected count = 0;
 
-  private options: F = null;
+  protected options: F = null;
 
   get totalPages(): number {
     return this.pages;
@@ -32,16 +33,10 @@ export class Collection<M, T, F = AnyRecord, D = AnyRecord> extends Base<string,
     return this.count;
   }
 
-  get filterOptions(): Readonly<F> {
-    return this.options;
-  }
+  readonly filterOptions: Readonly<F> = null;
 
   get length(): number {
     return this.models.length;
-  }
-
-  get errors(): string {
-    return this.dataErrors;
   }
 
   [Symbol.iterator](): IterableIterator<M> {
@@ -95,7 +90,7 @@ export class Collection<M, T, F = AnyRecord, D = AnyRecord> extends Base<string,
   }
 
   fetch(filters?: Partial<F>): Promise<void> {
-    this.setFilterOpt(filters);
+    this.updateFilterOptions(filters);
     return this.fetchList();
   }
 
@@ -129,10 +124,10 @@ export class Collection<M, T, F = AnyRecord, D = AnyRecord> extends Base<string,
     return {} as F;
   }
 
-  protected setFilterOpt(filterOpt: Partial<F>): this {
-    Vue.set(this, '_filterOpt', {
+  protected updateFilterOptions(filterOpt: Partial<F>): this {
+    updateObjState(this, 'filterOptions', {
       ...this.defaultFilterOptions(),
-      ...this.options,
+      ...this.filterOptions,
       ...filterOpt,
     });
     return this;
@@ -140,11 +135,10 @@ export class Collection<M, T, F = AnyRecord, D = AnyRecord> extends Base<string,
 
   protected beforeFetch(): void | Promise<void> {}
 
-  protected afterFetch(): void | Promise<void> {}
+  protected onFetch(): void | Promise<void> {}
 
   protected init(data: D): this {
     if (!TypeHelper.isObject(data)) {
-      console.warn(`[${this.constructor.name}]: initAttributes data is not object`);
       return this;
     }
     const descriptors = Object.getOwnPropertyDescriptors(this);
@@ -157,25 +151,22 @@ export class Collection<M, T, F = AnyRecord, D = AnyRecord> extends Base<string,
     return this;
   }
 
-  @UseHook({
-    before: 'toggleLoading',
-    after: 'toggleLoading',
+  @UseHook<Collection<any, any>>({
+    before: ['toggleLoading', 'clearErrors', 'beforeFetch'],
+    after: ['toggleLoading', 'onFetch'],
   })
   protected async fetchList(): Promise<void> {
-    this.dataErrors = null;
-    await this.beforeFetch();
     const method = this.getApiProvideMethod('fetch');
-    const { content, pages, size, total, data } = await method.call(this, this.options);
+    const { content, pages, size, total, data } = await method.call(this, this.filterOptions);
     this.pages = pages;
     this.count = total || pages * (size || (this.options as any).size);
     this.init(data);
     this.replace(content);
-    await this.afterFetch();
   }
 
   protected onError(exception: Error): void {
     this.toggleLoading(false);
-    this.dataErrors = exception.message;
+    updateObjState(this, 'errors', exception.message);
     super.onError(exception);
   }
 

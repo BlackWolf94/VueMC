@@ -1,13 +1,13 @@
 /**
- * @author Dmitro Zataidukh
+ * @author Dmitriy Zataidukh
  * @email zidadindimon@gmail.com
  * @createdAt 4/12/20
  */
 
-import faker from 'faker';
-import { TInitialData, TodoListCollection, TTodoFilterOpt } from '../../src/sample/TodoList.collection';
-import { TaskInitData } from '../../src/sample/Task.model';
-import { CollectionFetchResponse } from '../../src/types';
+import * as faker from 'faker';
+import { TInitialData, TodoListCollection, TTodoFilterOpt } from './mock/TodoList.collection';
+import { TaskInitData } from './mock/Task.model';
+import { CollectionFetchResponse } from '../src';
 
 describe('Collection', () => {
   const generateContent = ({ size, page }: TTodoFilterOpt) =>
@@ -17,7 +17,7 @@ describe('Collection', () => {
         id: size * (page - 1) + index + 1,
         title: faker.name.title(),
         description: faker.lorem.paragraph(),
-        done: faker.random.boolean(),
+        done: faker.datatype.boolean(),
         createdAt: faker.date.past().valueOf(),
         author: {
           firstName: faker.name.firstName(),

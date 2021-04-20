@@ -1,6 +1,7 @@
 import TypeHelper from '@zidadindimon/js-typehelper';
-import { Base as IBase } from '../types';
+import { Base as IBase } from './types';
 import { BadConfigException } from './exceptions';
+import { updateObjState } from './helper';
 
 /**
  * @author Dmitriy Zataidukh
@@ -9,24 +10,20 @@ import { BadConfigException } from './exceptions';
  */
 
 export abstract class Base<E, A> implements IBase<A> {
-  protected dataLoading = false;
+  readonly loading: boolean = false;
 
   protected dataErrors: string = null;
 
   protected apiProvider: Partial<A> = null;
 
-  abstract get errors(): E;
+  readonly errors: E = null;
 
   get hasError(): boolean {
-    return !!this.dataErrors;
-  }
-
-  get loading(): boolean {
-    return this.dataLoading;
+    return !!this.errors;
   }
 
   protected clearErrors(): void {
-    this.dataErrors = null;
+    updateObjState(this, 'errors', null);
   }
 
   protected get getApiProvider(): Partial<A> {
@@ -39,12 +36,12 @@ export abstract class Base<E, A> implements IBase<A> {
   }
 
   protected before(): void {
-    this.dataLoading = true;
+    this.toggleLoading(true);
     this.dataErrors = null;
   }
 
   protected after(): void {
-    this.dataLoading = false;
+    this.toggleLoading(false);
   }
 
   protected onError(exception: Error): void {
@@ -66,7 +63,7 @@ export abstract class Base<E, A> implements IBase<A> {
   }
 
   protected toggleLoading(loading?: boolean): this {
-    this.dataLoading = loading === undefined ? !this.dataLoading : loading;
+    updateObjState(this, 'loading', loading === null ? !this.loading : loading);
     return this;
   }
 }

@@ -3,7 +3,7 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { Model, ModelApiProvider, MutationList, RuleList } from '../index';
+import { Model, ModelApiProvider, MutationList, RuleList } from '../../src';
 
 export type TaskInitData = {
   id?: number;

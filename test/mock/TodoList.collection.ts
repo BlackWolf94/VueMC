@@ -3,7 +3,7 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { Collection, CollectionApiProvider, CollectionFetchResponse } from '../index';
+import { Collection, CollectionApiProvider, CollectionFetchResponse } from '../../src';
 import { TaskInitData, TaskModel } from './Task.model';
 
 /**

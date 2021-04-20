@@ -7,7 +7,7 @@
 import { TaskInitData, TaskModel } from '../../src/sample/Task.model';
 
 describe('Model: initialize', () => {
-  it('should be apply default value', function() {
+  it('should be apply default value', () => {
     const model = new TaskModel();
 
     expect(model.createdAt).toBeInstanceOf(Date);
@@ -15,7 +15,7 @@ describe('Model: initialize', () => {
     expect(model.isNew).toBeTruthy();
   });
 
-  it('should be apply initialize', function() {
+  it('should be apply initialize', () => {
     const model = new TaskModel();
     const data: TaskInitData = {
       id: 1,
@@ -31,7 +31,7 @@ describe('Model: initialize', () => {
     expect((model as any).data).toBeUndefined();
   });
 
-  it('should be apply mutations', function() {
+  it('should be apply mutations', () => {
     const model = new TaskModel();
     const data: TaskInitData = {
       author: {
@@ -45,7 +45,7 @@ describe('Model: initialize', () => {
     expect(model.author).toBe(`${firstName} ${lastName}`);
   });
 
-  it('should be reactive computed value', function() {
+  it('should be reactive computed value', () => {
     const model = new TaskModel();
     const data: TaskInitData = {
       createdAt: new Date().valueOf(),

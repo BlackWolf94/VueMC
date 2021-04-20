@@ -1,29 +1,28 @@
 /**
- * @author Dmitro Zataidukh
+ * @author Dmitriy Zataidukh
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
 
-
 import { TaskModel } from '../../src/sample/Task.model';
-import { ValidateException } from '../../src';
+import { ValidateException } from '../../src/mc/exceptions';
 
-describe('Model: validation', function() {
-
-  it('should be validation error', function() {
+describe('Model: validation', () => {
+  it('should be validation error', () => {
     const model = new TaskModel();
 
     model.description = 'Description';
 
     expect<boolean>(model.validate()).toBeFalsy();
-    expect(JSON.stringify(model.errors.attrs))
-      .toBe(JSON.stringify({
+    expect(JSON.stringify(model.errors.attrs)).toBe(
+      JSON.stringify({
         title: 'Title can`t be empty',
         description: 'Description must be more 15 symbols',
-      }));
+      }),
+    );
   });
 
-  it('should be validation success', function() {
+  it('should be validation success', () => {
     const model = new TaskModel();
     model.title = 'Test task title';
     model.description = 'Todo description';
@@ -31,7 +30,7 @@ describe('Model: validation', function() {
     expect<boolean>(model.validate()).toBeTruthy();
   });
 
-  it('should be throw Validate exception', async function() {
+  it('should be throw Validate exception', async () => {
     const model = new TaskModel();
     try {
       await model.save();
@@ -41,7 +40,7 @@ describe('Model: validation', function() {
     }
   });
 
-  it('should be save success', async function() {
+  it('should be save success', async () => {
     const model = new TaskModel();
     model.title = 'Test task title';
     model.description = 'Todo description';

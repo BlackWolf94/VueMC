@@ -52,7 +52,7 @@ export class TodoListCollection extends Collection<TaskModel, TaskInitData, TTod
   /**
    * @default filter
    */
-  protected defFilterOpt(): TTodoFilterOpt {
+  protected defaultFilterOptions(): TTodoFilterOpt {
     return {
       page: 1,
       size: 20,
@@ -70,14 +70,14 @@ export class TodoListCollection extends Collection<TaskModel, TaskInitData, TTod
    * @comment computed value
    */
   get onlyDone(): TaskModel[] {
-    return this._models.filter(model => model.done);
+    return this.models.filter((model) => model.done);
   }
 
   /**
    * @comment computed value
    */
   get page() {
-    return this.filterOpt.page;
+    return this.filterOptions.page;
   }
 
   /**

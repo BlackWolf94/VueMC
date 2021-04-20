@@ -3,8 +3,7 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { AbstractModel, ModelApiProvider, MutationList, RuleList } from '../index';
-import { Model } from '../mc/AbstractModel';
+import { Model, ModelApiProvider, MutationList, RuleList } from '../index';
 
 export type TaskInitData = {
   id?: number;
@@ -36,7 +35,7 @@ export interface Task extends Model {
   author: string;
 }
 
-export class TaskModel extends AbstractModel<TaskInitData, TaskInitData, TaskFetchOpt, TaskDelOpt> {
+export class TaskModel extends Model<TaskInitData, TaskInitData, TaskFetchOpt, TaskDelOpt> {
   /**
    * @comment enable validation before a save/update
    * @default true
@@ -47,10 +46,15 @@ export class TaskModel extends AbstractModel<TaskInitData, TaskInitData, TaskFet
    * @comment attribute for model
    */
   id: number = null;
+
   title: string = null;
+
   description: string = null;
+
   createdAt: Date = new Date();
-  done: boolean = false;
+
+  done = false;
+
   author: string;
 
   /**
@@ -82,8 +86,8 @@ export class TaskModel extends AbstractModel<TaskInitData, TaskInitData, TaskFet
    */
   rules(): RuleList<Task> {
     return {
-      title: [v => !!v || 'Title can`t be empty'],
-      description: [v => !!v || 'Description can`t be empty', v => v.length > 15 || 'Description must be more 15 symbols'],
+      title: [(v) => !!v || 'Title can`t be empty'],
+      description: [(v) => !!v || 'Description can`t be empty', (v) => v.length > 15 || 'Description must be more 15 symbols'],
     };
   }
 

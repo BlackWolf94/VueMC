@@ -1,3 +1,6 @@
+/* eslint-disable no-underscore-dangle,@typescript-eslint/no-unused-vars */
+// noinspection JSUnusedGlobalSymbols
+
 /**
  * @author Dmitriy Zataidukh
  * @email zidadindimon@gmail.com
@@ -5,64 +8,95 @@
  */
 import Vue from 'vue';
 import TypeHelper from '@zidadindimon/js-typehelper';
-import { AbstractObject } from './AbstractObject';
-import { CollectionApiProvider } from '../types';
-import { AbstractModel } from './AbstractModel';
-import { HooksBehaviour } from './Handler';
+import { Base } from './Base';
+import { AnyRecord, CollectionApiProvider } from '../types';
+import { Model } from './Model';
+import { UseHook } from './decarators';
 
-export class Collection<M, T, F = Record<string, any>, D = Record<string, any>> extends AbstractObject<string, CollectionApiProvider<T, F, D>> {
-  protected _models: M[] = [];
-
-  protected _pages: number = 0;
-
-  protected _total: number = 0;
-
-  private _filterOpt: F = null;
-
+export class Collection<M, T, F = AnyRecord, D = AnyRecord> extends Base<string, CollectionApiProvider<T, F, D>> {
   selected: M = null;
 
-  [Symbol.iterator](): IterableIterator<M> {
-    return this._models[Symbol.iterator]();
+  protected models: M[] = [];
+
+  protected pages = 0;
+
+  protected count = 0;
+
+  private options: F = null;
+
+  get totalPages(): number {
+    return this.pages;
+  }
+
+  get totalCount(): number {
+    return this.count;
+  }
+
+  get filterOptions(): Readonly<F> {
+    return this.options;
   }
 
   get length(): number {
-    return this._models.length;
+    return this.models.length;
   }
 
   get errors(): string {
     return this.dataErrors;
   }
 
-  get pages(): number {
-    return this._pages;
-  }
-
-  get total(): number {
-    return this._total;
-  }
-
-  get filterOpt(): Readonly<F> {
-    return this._filterOpt;
+  [Symbol.iterator](): IterableIterator<M> {
+    return this.models[Symbol.iterator]();
   }
 
   clear(): this {
-    this._models = [];
-    return this;
-  }
-
-  private addItem(item: T | M) {
-    this._models.push(this.initModel(item));
+    this.models = [];
     return this;
   }
 
   add(items: Array<T | M> | T | M): this {
-    items = Array.isArray(items) ? items : [items];
-    items.forEach(this.addItem.bind(this));
+    (Array.isArray(items) ? items : [items]).forEach(this.addItem.bind(this));
     return this;
   }
 
   replace(items: Array<T | M> | T | M): this {
     return this.clear().add(items);
+  }
+
+  getItems(): M[] {
+    return this.models;
+  }
+
+  get(index: number): M {
+    return this.models[index];
+  }
+
+  first(): M {
+    return this.models.length ? this.models[0] : null;
+  }
+
+  last(): M {
+    const { length } = this.models;
+    return length ? this.models[length - 1] : null;
+  }
+
+  remove(el: Array<number | M> | number | M): this {
+    const arr = Array.isArray(el) ? el : [el];
+    arr.forEach(this.removeItem.bind(this));
+    return this;
+  }
+
+  select(index: number): this {
+    this.selected = this.models[index] || null;
+    return this;
+  }
+
+  destruct(): void {
+    this.clear();
+  }
+
+  fetch(filters?: Partial<F>): Promise<void> {
+    this.setFilterOpt(filters);
+    return this.fetchList();
   }
 
   protected model(item?: T | M): { new (): M } {
@@ -75,64 +109,33 @@ export class Collection<M, T, F = Record<string, any>, D = Record<string, any>> 
 
   protected initModel(item: T | M): M {
     const modelClass: { new (): M } = this.model(item);
-    if ((item as M) instanceof AbstractModel || !modelClass) {
+    if ((item as M) instanceof Model || !modelClass) {
       return item as M;
     }
+    // eslint-disable-next-line new-cap
     const model: M = new modelClass();
     (model as any).init(item, false);
     this.onModelInit(model as M);
     return model;
   }
 
-  getItems(): M[] {
-    return this._models;
+  protected removeItem(el: number | M): this {
+    const index: number = TypeHelper.isNumber(el) ? (el as number) : this.models.findIndex((model) => model === el);
+    this.models.splice(index, 1);
+    return this.replace(this.models);
   }
 
-  get(index: number): M {
-    return this._models[index];
-  }
-
-  first(): M {
-    return this._models.length ? this._models[0] : null;
-  }
-
-  last(): M {
-    const { length } = this._models;
-    return length ? this._models[length - 1] : null;
-  }
-
-  remove(el: Array<number | M> | number | M): this {
-    const arr = Array.isArray(el) ? el : [el];
-    arr.forEach(this.removeItem.bind(this));
-    return this;
-  }
-
-  select(index: number): this {
-    this.selected = this._models[index] || null;
-    return this;
-  }
-
-  protected removeItem(el: number | M) {
-    const index: number = TypeHelper.isNumber(el) ? (el as number) : this._models.findIndex(model => model === el);
-    this._models.splice(index, 1);
-    return this.replace(this._models);
-  }
-
-  protected defFilterOpt(): F {
-    return {};
+  protected defaultFilterOptions(): F {
+    return {} as F;
   }
 
   protected setFilterOpt(filterOpt: Partial<F>): this {
     Vue.set(this, '_filterOpt', {
-      ...this.defFilterOpt(),
-      ...this._filterOpt,
+      ...this.defaultFilterOptions(),
+      ...this.options,
       ...filterOpt,
     });
     return this;
-  }
-
-  destruct(): void {
-    this.clear();
   }
 
   protected beforeFetch(): void | Promise<void> {}
@@ -147,14 +150,14 @@ export class Collection<M, T, F = Record<string, any>, D = Record<string, any>> 
     const descriptors = Object.getOwnPropertyDescriptors(this);
 
     Object.keys(descriptors)
-      .filter(descriptor => !descriptor.match(/^_.*$/gm))
-      .forEach(descriptor => {
+      .filter((descriptor) => !descriptor.match(/^_.*$/gm))
+      .forEach((descriptor) => {
         Vue.set<this>(this, descriptor, data[descriptor] || this[descriptor]);
       });
     return this;
   }
 
-  @HooksBehaviour({
+  @UseHook({
     before: 'toggleLoading',
     after: 'toggleLoading',
   })
@@ -162,22 +165,22 @@ export class Collection<M, T, F = Record<string, any>, D = Record<string, any>> 
     this.dataErrors = null;
     await this.beforeFetch();
     const method = this.getApiProvideMethod('fetch');
-    const { content, pages, size, total, data } = await method.call(this, this._filterOpt);
-    this._pages = pages;
-    this._total = total || pages * (size || (this._filterOpt as any).size);
+    const { content, pages, size, total, data } = await method.call(this, this.options);
+    this.pages = pages;
+    this.count = total || pages * (size || (this.options as any).size);
     this.init(data);
     this.replace(content);
     await this.afterFetch();
   }
 
-  fetch(filters?: Partial<F>): Promise<void> {
-    this.setFilterOpt(filters);
-    return this.fetchList();
-  }
-
-  protected onError(exception: Error) {
+  protected onError(exception: Error): void {
     this.toggleLoading(false);
     this.dataErrors = exception.message;
     super.onError(exception);
+  }
+
+  private addItem(item: T | M) {
+    this.models.push(this.initModel(item));
+    return this;
   }
 }

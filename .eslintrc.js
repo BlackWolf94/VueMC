@@ -5,77 +5,43 @@ module.exports = {
     node: true,
     jest: true,
   },
-  extends: ['airbnb-typescript/base', 'plugin:@typescript-eslint/recommended', 'prettier/@typescript-eslint', 'plugin:prettier/recommended'],
-  parser: '@typescript-eslint/parser',
+  extends: [
+    // 'eslint:recommended',
+    'plugin:vue/essential',
+    'airbnb-base',
+    'plugin:@typescript-eslint/recommended',
+    'prettier',
+  ],
   parserOptions: {
-    project: 'tsconfig.json',
+    ecmaVersion: 12,
+    parser: '@typescript-eslint/parser',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint'],
-  ignorePatterns: ['.eslintrc.js', 'lib/*'],
+  ignorePatterns: ['./lib', './docs'],
+  plugins: ['vue', '@typescript-eslint'],
   rules: {
-    '@typescript-eslint/no-inferrable-types': 'off',
+    'import/extensions': 'off',
+    'import/no-unresolved': 'off',
+    'import/no-extraneous-dependencies': 'off',
     'import/prefer-default-export': 'off',
+    'no-underscore-dangle': 'off',
     'class-methods-use-this': 'off',
-    '@typescript-eslint/no-implied-eval': 'off',
+    '@typescript-eslint/no-empty-function': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/naming-convention': [
       'error',
       {
         selector: 'typeLike',
-        format: ['PascalCase'],
+        format: ['PascalCase']
       },
       {
         selector: ['enum', 'enumMember'],
-        format: ['UPPER_CASE'],
+        format: ['UPPER_CASE']
       },
       {
         selector: ['variableLike', 'method', 'property', 'memberLike'],
-        format: ['camelCase'],
-      },
+        format: ['camelCase']
+      }
     ],
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
-    '@typescript-eslint/explicit-function-return-type': [
-      'error',
-      {
-        allowHigherOrderFunctions: true,
-      },
-    ],
-    '@typescript-eslint/explicit-member-accessibility': [
-      'error',
-      {
-        accessibility: 'no-public',
-        overrides: {
-          parameterProperties: 'explicit',
-          properties: 'no-public',
-          methods: 'no-public',
-        },
-      },
-    ],
-    '@typescript-eslint/explicit-module-boundary-types': [
-      'error',
-      {
-        allowHigherOrderFunctions: true,
-      },
-    ],
-    '@typescript-eslint/consistent-indexed-object-style': ['error', 'record'],
-    '@typescript-eslint/prefer-enum-initializers': ['error'],
-    '@typescript-eslint/prefer-includes': ['error'],
-    '@typescript-eslint/consistent-type-assertions': ['error', { assertionStyle: 'as', objectLiteralTypeAssertions: 'never' }],
-    '@typescript-eslint/typedef': [
-      'error',
-      {
-        arrayDestructuring: false,
-        arrowParameter: false,
-        memberVariableDeclaration: true,
-        objectDestructuring: false,
-        parameter: true,
-        propertyDeclaration: false,
-        variableDeclaration: false,
-        variableDeclarationIgnoreFunction: true,
-      },
-    ],
-    '@typescript-eslint/no-empty-function': 'warn',
-    'import/no-extraneous-dependencies': 'off',
   },
 };

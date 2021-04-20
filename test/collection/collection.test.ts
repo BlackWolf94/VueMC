@@ -4,12 +4,12 @@
  * @createdAt 4/12/20
  */
 
+import faker from 'faker';
 import { TInitialData, TodoListCollection, TTodoFilterOpt } from '../../src/sample/TodoList.collection';
 import { TaskInitData } from '../../src/sample/Task.model';
-import faker from 'faker';
 import { CollectionFetchResponse } from '../../src/types';
 
-describe('Collection', function() {
+describe('Collection', () => {
   const generateContent = ({ size, page }: TTodoFilterOpt) =>
     Array(size)
       .fill(0)
@@ -25,13 +25,13 @@ describe('Collection', function() {
         },
       }));
 
-  it('should be initialize', function() {
+  it('should be initialize', () => {
     const collection = new TodoListCollection();
     collection.add(generateContent({ size: 50, page: 1 }));
     expect(collection.length).toBe(50);
   });
 
-  it('should be initialize by api', async function() {
+  it('should be initialize by api', async () => {
     const collection = new TodoListCollection();
 
     collection.useApi({
@@ -48,9 +48,9 @@ describe('Collection', function() {
       },
     });
     await collection.fetch({ page: 2 });
-    expect(collection.length).toBe(collection.filterOpt.size);
-    expect(collection.page).toBe(collection.filterOpt.page);
-    expect(collection.total).toBe(2 * collection.filterOpt.size);
+    expect(collection.length).toBe(collection.filterOptions.size);
+    expect(collection.page).toBe(collection.filterOptions.page);
+    expect(collection.totalCount).toBe(2 * collection.filterOptions.size);
     expect(collection.metaInfo).toBe('Meta Info');
     expect((collection as any).otherField).toBeUndefined();
   });

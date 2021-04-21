@@ -1,9 +1,9 @@
 # **GET STARTED**
 
-This library is designed to conveniently manipulate the state of components and
-divide business logic and manipulation into different levels of abstraction.
+This library is designed to conveniently manipulate the state of components and divide business logic and manipulation
+into different levels of abstraction.
 
-The basic concept is based on models (`Model`) and collections (` Colection`).
+The basic concept is based on models (`AbstarctModel`) and collections (` Colection`).
 (See [vue-mc](https://vuemc.io/#introduction))
 
 The library provides a single point of entry and a consistent API:

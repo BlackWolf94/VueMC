@@ -3,9 +3,9 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { IModelApiProvider, Model, TMutations, TRules } from '../index';
+import { Model, ModelApiProvider, MutationList, RuleList } from '../../src';
 
-export type TTaskInitData = {
+export type TaskInitData = {
   id?: number;
   title?: string;
   description?: string;
@@ -18,29 +18,43 @@ export type TTaskInitData = {
   };
 };
 
-export type TTaskFetchOpt = {
+export type TaskFetchOpt = {
   id: number;
 };
 
-export type TTaskDelOpt = {
+export type TaskDelOpt = {
   id: number;
 };
 
-export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt, TTaskDelOpt> {
+export interface Task extends Model {
+  id: number;
+  title: string;
+  description: string;
+  createdAt: Date;
+  done: boolean;
+  author: string;
+}
+
+export class TaskModel extends Model<TaskInitData, TaskInitData, TaskFetchOpt, TaskDelOpt> {
   /**
-   * @comment enable validation before save/update
+   * @comment enable validation before a save/update
    * @default true
    */
-  protected _validationBeforeSave = true;
+  protected validationBeforeSave = true;
 
   /**
    * @comment attribute for model
    */
   id: number = null;
+
   title: string = null;
+
   description: string = null;
+
   createdAt: Date = new Date();
-  done: boolean = false;
+
+  done = false;
+
   author: string;
 
   /**
@@ -53,7 +67,7 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   /**
    * @comment mutate initial data before apply to model
    */
-  protected mutations(data: TTaskInitData): TMutations<TaskModel> {
+  protected mutations(data: TaskInitData): MutationList<Task> {
     return {
       createdAt: () => new Date(data.createdAt),
       author: () => (data.author ? `${data.author.firstName} ${data.author.lastName}` : ''),
@@ -70,22 +84,19 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   /**
    * @comment rule for validate model before save/update
    */
-  rules(): TRules<TaskModel> {
+  rules(): RuleList<Task> {
     return {
-      title: [v => !!v || 'Title can`t be empty'],
-      description: [
-        v => !!v || 'Description can`t be empty',
-        v => v.length > 15 || 'Description must be more 15 symbols',
-      ],
+      title: [(v) => !!v || 'Title can`t be empty'],
+      description: [(v) => !!v || 'Description can`t be empty', (v) => v.length > 15 || 'Description must be more 15 symbols'],
     };
   }
 
   /**
-   * @comment mutate data before save/update
+   * @comment mutate data before the save/update
    * if method return null - then return model public data
    * @default method empty
    */
-  protected mutateBeforeSave(): TMutations<TTaskInitData> {
+  protected mutateBeforeSave(): MutationList<TaskInitData> {
     return {
       id: this.id,
       title: this.title,
@@ -98,18 +109,18 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   /**
    * @comment configure api method
    */
-  protected api(): IModelApiProvider<TTaskInitData, TTaskInitData, TTaskFetchOpt, TTaskDelOpt> {
+  protected api(): ModelApiProvider<TaskInitData, TaskInitData, TaskFetchOpt, TaskDelOpt> {
     return {
-      async fetch(data?: TTaskFetchOpt): Promise<TTaskInitData> {
+      async fetch(data?: TaskFetchOpt): Promise<TaskInitData> {
         return {
           id: data.id,
           title: `Task #${data.id}`,
           description: 'Description of task',
         };
       },
-      async save(data?: TTaskInitData): Promise<any> {},
-      async update(data?: TTaskInitData): Promise<any> {},
-      async delete(data?: TTaskDelOpt): Promise<any> {},
+      async save(data?: TaskInitData): Promise<any> {},
+      async update(data?: TaskInitData): Promise<any> {},
+      async delete(data?: TaskDelOpt): Promise<any> {},
     };
   }
 
@@ -151,7 +162,7 @@ export class TaskModel extends Model<TTaskInitData, TTaskInitData, TTaskFetchOpt
   /**
    * @comment configure delete filter options
    */
-  protected get deleteOptions(): TTaskDelOpt {
+  protected get deleteOptions(): TaskDelOpt {
     return { id: this.id };
   }
 }

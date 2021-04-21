@@ -3,8 +3,8 @@
  * @email zidadindimon@gmail.com
  * @createdAt 4/10/20
  */
-import { Collection, ICollectionApiProvider, TFetchResp } from '../index';
-import { TaskModel, TTaskInitData } from './Task.model';
+import { Collection, CollectionApiProvider, CollectionFetchResponse } from '../../src';
+import { TaskInitData, TaskModel } from './Task.model';
 
 /**
  * @comment collection filter data interface
@@ -22,11 +22,11 @@ export type TInitialData = {
   otherField?: any;
 };
 
-export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTodoFilterOpt, TInitialData> {
+export class TodoListCollection extends Collection<TaskModel, TaskInitData, TTodoFilterOpt, TInitialData> {
   /**
    * @comment set model that use in collection
    */
-  protected model(item?: TTaskInitData | TaskModel): { new (): TaskModel } {
+  protected model(item?: TaskInitData | TaskModel): { new (): TaskModel } {
     return TaskModel;
   }
 
@@ -38,9 +38,9 @@ export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTo
   /**
    * @comment  configure api method
    */
-  protected api(): ICollectionApiProvider<TTaskInitData, TTodoFilterOpt, TInitialData> {
+  protected api(): CollectionApiProvider<TaskInitData, TTodoFilterOpt, TInitialData> {
     return {
-      async fetch(filter?: TTodoFilterOpt): Promise<TFetchResp<TTaskInitData, TInitialData>> {
+      async fetch(filter?: TTodoFilterOpt): Promise<CollectionFetchResponse<TaskInitData, TInitialData>> {
         return {
           content: [],
           pages: 0,
@@ -52,7 +52,7 @@ export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTo
   /**
    * @default filter
    */
-  protected defFilterOpt(): TTodoFilterOpt {
+  protected defaultFilterOptions(): TTodoFilterOpt {
     return {
       page: 1,
       size: 20,
@@ -70,14 +70,14 @@ export class TodoListCollection extends Collection<TaskModel, TTaskInitData, TTo
    * @comment computed value
    */
   get onlyDone(): TaskModel[] {
-    return this._models.filter(model => model.done);
+    return this.models.filter((model) => model.done);
   }
 
   /**
    * @comment computed value
    */
   get page() {
-    return this.filterOpt.page;
+    return this.filterOptions.page;
   }
 
   /**

@@ -159,7 +159,7 @@ export class Collection<M, T, F = AnyRecord, D = AnyRecord> extends Base<string,
     const method = this.getApiProvideMethod('fetch');
     const { content, pages, size, total, data } = await method.call(this, this.filterOptions);
     this.pages = pages;
-    this.count = total || pages * (size || (this.options as any).size);
+    this.count = total || pages * (size || (this.filterOptions as any).size);
     this.init(data);
     this.replace(content);
   }

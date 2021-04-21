@@ -6,8 +6,7 @@
   "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "test": "jest",
-    "copy-dts": "copyfiles -u 1 \"src/**/*.d.ts\" types",
+    "test": "jest --collect-coverage",
     "build": "rimraf types && rimraf lib && tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "eslint \"{src,apps,test}/**/*.ts\" --fix",
@@ -53,7 +52,6 @@
     "rimraf": "^3.0.2",
     "tplant": "^2.3.6",
     "ts-jest": "~26.5.5",
-    "tslint": "^6.1.1",
     "typedoc": "^0.20.35",
     "typescript": "~4.2.4"
   }

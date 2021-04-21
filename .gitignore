@@ -2,3 +2,5 @@
 node_modules
 .idea
 lib
+html-report
+coverage

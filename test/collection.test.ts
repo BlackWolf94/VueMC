@@ -47,11 +47,14 @@ describe('Collection', () => {
         };
       },
     });
-    await collection.fetch({ page: 2 });
-    expect(collection.length).toBe(collection.filterOptions.size);
-    expect(collection.page).toBe(collection.filterOptions.page);
-    expect(collection.totalCount).toBe(2 * collection.filterOptions.size);
-    expect(collection.metaInfo).toBe('Meta Info');
+    await expect(collection.fetch({ page: 2 })).resolves.not.toThrow();
+    expect(collection).toMatchObject({
+      length: collection.filterOptions.size,
+      page: collection.filterOptions.page,
+      totalCount: 2 * collection.filterOptions.size,
+      metaInfo: expect.stringMatching('Meta Info'),
+    });
+
     expect((collection as any).otherField).toBeUndefined();
   });
 });

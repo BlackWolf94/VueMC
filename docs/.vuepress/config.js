@@ -16,8 +16,6 @@ module.exports = {
     sidebar: {
       '/usage/': 'auto',
       '/guide/': 'auto',
-      // fallback
-      '/': ['' /* / */, 'contact' /* /contact.html */, 'about' /* /about.html */],
     },
   },
   head: [

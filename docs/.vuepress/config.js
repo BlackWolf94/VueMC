@@ -1,6 +1,7 @@
 module.exports = {
   title: 'Vue MC',
   description: 'Model and Collection system for vueJs',
+  base: '/VueMC/',
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide/' },

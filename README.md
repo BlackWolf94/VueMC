@@ -21,6 +21,7 @@ Add the `@zidadindimon/vue-mc` package to your package dependencies:
 npm i @zidadindimon/vue-mc
 ```
 
-
+[DOCS](https://blackwolf94.github.io/VueMC/)
+[Example](https://bitbucket.org/master-form/vuebase/src/4c8c13e047e6094795f07f3096b8f90e535f0dcf/src/mc/?at=release%2Fmodel-collection)
 
 

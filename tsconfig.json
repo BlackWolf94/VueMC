@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es6",
     "module": "commonjs",
     "outDir": "./lib",
     "noImplicitAny": false,
+    "skipLibCheck": true,
     "lib": [
       "dom",
       "es2016",
@@ -13,14 +14,13 @@
       "scripthost",
       "esnext"
     ],
-    "strict": false,
+    "strict": true,
     "declaration": true,
-    "declarationDir": "types",
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": false,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "importHelpers": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
@@ -29,18 +29,23 @@
     "esModuleInterop": true,
     "incremental": true,
     "paths": {
-      "@declaration/*": [
-        "src/types/*"
-      ],
-      "@mc/*": [
-        "src/mc/*"
+      "@/*": [
+        "src/*"
       ]
     }
   },
   "types": [
     "core-js",
-    "./node_modules/@types"
+    "node_modules/@types"
   ],
-  "include": ["src/**.*"],
-  "exclude": ["node_modules", "test"]
+  "include": [
+    "src/**.*"
+  ],
+  "exclude": [
+    "node_modules",
+    "test",
+    "lib",
+    "test/mock/*",
+    "./node_modules/@babel/types/lib/index.d.ts"
+  ]
 }

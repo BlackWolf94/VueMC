@@ -1,6 +1,6 @@
 {
   "name": "@zidadindimon/vue-mc",
-  "version": "2.0.0-beta.13",
+  "version": "2.0.1",
   "description": "vue model/collection system",
   "main": "lib/index.js",
   "module": "lib/index.js",
@@ -8,7 +8,7 @@
   "scripts": {
     "test": "jest --collect-coverage",
     "build": "rimraf types && rimraf lib && tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"{src,apps,test}/**/*.ts\" --fix",
     "prepare": "npm run build",
     "prepublishOnly": "npm test && npm run prepare",

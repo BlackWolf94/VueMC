@@ -17,7 +17,7 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     sourceType: 'module',
   },
-  ignorePatterns: ['./lib', './docs'],
+  ignorePatterns: ['./lib', './docs-old'],
   plugins: ['vue', '@typescript-eslint'],
   rules: {
     'import/extensions': 'off',
@@ -32,16 +32,16 @@ module.exports = {
       'error',
       {
         selector: 'typeLike',
-        format: ['PascalCase']
+        format: ['PascalCase'],
       },
       {
         selector: ['enum', 'enumMember'],
-        format: ['UPPER_CASE']
+        format: ['UPPER_CASE'],
       },
       {
         selector: ['variableLike', 'method', 'property', 'memberLike'],
-        format: ['camelCase']
-      }
+        format: ['camelCase'],
+      },
     ],
   },
 };

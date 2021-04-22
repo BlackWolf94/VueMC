@@ -2,4 +2,6 @@
 node_modules
 .idea
 lib
-package-lock.json
+html-report
+coverage
+docs/.vuepress/dist

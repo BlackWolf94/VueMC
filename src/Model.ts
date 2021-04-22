@@ -134,7 +134,7 @@ export class Model<D = Record<string, any>, SD = unknown, FO = Record<string, an
 
   protected onInit(): void {}
 
-  protected mutations<T extends Model>(data: D): MutationList<any> {
+  protected mutations(data: D): MutationList<any> {
     return {};
   }
 

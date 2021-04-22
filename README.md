@@ -1,9 +1,26 @@
 # Models and Collections for Vue.js
 
-<p style="text-align: center;">  
+# **GET STARTED**
 
-![vue](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTESKZKWHBiYrnqmXrsgOZCnVJhZiWR-P-YuiXdB9GYzjJ-pvmMNQ&s)
+This library is designed to conveniently manipulate the state of components and divide business logic and manipulation
+into different levels of abstraction.
 
-</p>
+The basic concept is based on models (`Model`) and collections (` Colection`).
+(See [vue-mc](https://vuemc.io/#introduction))
+
+The library provides a single point of entry and a consistent API:
+* GRUD operations.
+* Manage model states.
+
+____
+## Instalation
+
+Add the `@zidadindimon/vue-mc` package to your package dependencies:
+
+```bash
+npm i @zidadindimon/vue-mc
+```
+
+
 
 

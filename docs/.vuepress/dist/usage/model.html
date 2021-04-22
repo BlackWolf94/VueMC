@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Model | Vue MC</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css">
+    <meta name="description" content="Model and Collection system for vueJs">
+    
+    <link rel="preload" href="/assets/css/0.styles.e4d8b86b.css" as="style"><link rel="preload" href="/assets/js/app.0123ef0b.js" as="script"><link rel="preload" href="/assets/js/2.58baeeff.js" as="script"><link rel="preload" href="/assets/js/10.bc3ec804.js" as="script"><link rel="prefetch" href="/assets/js/11.196071e7.js"><link rel="prefetch" href="/assets/js/3.0d1eae29.js"><link rel="prefetch" href="/assets/js/4.a1a0064b.js"><link rel="prefetch" href="/assets/js/5.9c16c2fb.js"><link rel="prefetch" href="/assets/js/6.bcad081c.js"><link rel="prefetch" href="/assets/js/7.e542ad6f.js"><link rel="prefetch" href="/assets/js/8.1b8378dc.js"><link rel="prefetch" href="/assets/js/9.bce6ff22.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.e4d8b86b.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">Vue MC</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/guide/" class="nav-link">
+  Guide
+</a></div><div class="nav-item"><a href="/usage/model.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Model
+</a></div><div class="nav-item"><a href="/usage/collection.html" class="nav-link">
+  Collection
+</a></div><div class="nav-item"><a href="/usage/nuxt.html" class="nav-link">
+  Integration with NuxtJs
+</a></div><div class="nav-item"><a href="https://bitbucket.org/master-form/vuebase/src/4c8c13e047e6094795f07f3096b8f90e535f0dcf/?at=release%2Fmodel-collection" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Example
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/guide/" class="nav-link">
+  Guide
+</a></div><div class="nav-item"><a href="/usage/model.html" aria-current="page" class="nav-link router-link-exact-active router-link-active">
+  Model
+</a></div><div class="nav-item"><a href="/usage/collection.html" class="nav-link">
+  Collection
+</a></div><div class="nav-item"><a href="/usage/nuxt.html" class="nav-link">
+  Integration with NuxtJs
+</a></div><div class="nav-item"><a href="https://bitbucket.org/master-form/vuebase/src/4c8c13e047e6094795f07f3096b8f90e535f0dcf/?at=release%2Fmodel-collection" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Example
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Model</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/usage/model.html#create-model-class" class="sidebar-link">Create model class</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/usage/model.html#initialize" class="sidebar-link">Initialize</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/usage/model.html#default-value" class="sidebar-link">Default value</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/usage/model.html#mutations" class="sidebar-link">Mutations</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/usage/model.html#computed-value" class="sidebar-link">Computed value</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/usage/model.html#grud-operation" class="sidebar-link">GRUD operation</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/usage/model.html#hooks" class="sidebar-link">Hooks</a></li><li class="sidebar-sub-header"><a href="/usage/model.html#processing-indicators" class="sidebar-link">Processing indicators</a></li></ul></li><li><a href="/usage/model.html#validation" class="sidebar-link">Validation</a><ul class="sidebar-sub-headers"></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="model"><a href="#model" class="header-anchor">#</a> Model</h1> <h2 id="create-model-class"><a href="#create-model-class" class="header-anchor">#</a> Create model class</h2> <p>Simply usage</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">TaskModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token punctuation">{</span>
+    <span class="token comment">// you code here     </span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>Advanced</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">import</span> <span class="token punctuation">{</span> Model <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@zidadindimon/vue-mc'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">type</span> <span class="token class-name">Timestamp</span> <span class="token operator">=</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">enum</span> <span class="token constant">TASK_STATUS</span> <span class="token punctuation">{</span>
+    <span class="token constant">NEW</span> <span class="token operator">=</span> <span class="token string">'new'</span><span class="token punctuation">,</span>
+    <span class="token constant">PROCESSING</span> <span class="token operator">=</span> <span class="token string">'processing'</span><span class="token punctuation">,</span>
+    <span class="token constant">PAUSE</span> <span class="token operator">=</span> <span class="token string">'pause'</span><span class="token punctuation">,</span>
+    <span class="token constant">DONE</span> <span class="token operator">=</span> <span class="token string">'done'</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">export</span> <span class="token keyword">interface</span> <span class="token class-name">Task</span> <span class="token punctuation">{</span>
+    <span class="token keyword">readonly</span> id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+    title<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    description<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    assignTo<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
+    status<span class="token operator">:</span> <span class="token constant">TASK_STATUS</span><span class="token punctuation">;</span>
+    createdAt<span class="token operator">:</span> Date<span class="token punctuation">;</span>
+    updatedAt<span class="token operator">:</span> Date<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">/**
+ * here we extends class Model and
+ */</span>
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">TaskModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token keyword">implements</span> <span class="token class-name">Task</span> <span class="token punctuation">{</span>
+    <span class="token comment">//...</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="initialize"><a href="#initialize" class="header-anchor">#</a> Initialize</h2> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token comment">// TaskModel.ts</span>
+
+<span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">TaskModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model<span class="token operator">&lt;</span>Task<span class="token operator">&gt;</span></span> <span class="token keyword">implements</span> <span class="token class-name">Task</span> <span class="token punctuation">{</span>
+    <span class="token comment">//...</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><p>In <code>vue component</code></p> <div class="language-typescript extra-class"><pre class="language-typescript"><code>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">SomeComponentForm</span> <span class="token keyword">extends</span> <span class="token class-name">Vue</span> <span class="token punctuation">{</span>
+    model<span class="token operator">:</span> TaskModel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TaskModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    @<span class="token function">Prop</span><span class="token punctuation">(</span>Number<span class="token punctuation">)</span> id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+
+    @<span class="token function">Watch</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span>
+    <span class="token keyword">async</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token keyword">void</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span>model<span class="token punctuation">.</span><span class="token function">fetch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>or</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code>@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">PostListItem</span> <span class="token keyword">extends</span> <span class="token class-name">Vue</span> <span class="token punctuation">{</span>
+    @<span class="token function">Prop</span><span class="token punctuation">(</span>PostModel<span class="token punctuation">)</span> <span class="token keyword">readonly</span> model<span class="token operator">:</span> PostModel<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+</code></pre></div><p>or</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">const</span> data<span class="token operator">:</span> Task <span class="token operator">=</span> <span class="token punctuation">{</span>
+    id<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    title<span class="token operator">:</span> <span class="token string">'Title'</span><span class="token punctuation">,</span>
+    <span class="token comment">// ...</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">const</span> model <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TaskModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">init</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div><h2 id="default-value"><a href="#default-value" class="header-anchor">#</a> Default value</h2> <p>In order to specify a default value, it is enough to specify the attributes of the model and set them values.</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">TaskModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model</span> <span class="token keyword">implements</span> <span class="token class-name">Task</span> <span class="token punctuation">{</span>
+    <span class="token keyword">readonly</span> id<span class="token operator">:</span> <span class="token builtin">number</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+    description<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+    status<span class="token operator">:</span> <span class="token constant">TASK_STATUS</span> <span class="token operator">=</span> <span class="token constant">TASK_STATUS</span><span class="token punctuation">.</span><span class="token constant">NEW</span><span class="token punctuation">;</span>
+
+    title<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+    assignTo<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">=</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// apply default value</span>
+    createdAt<span class="token operator">:</span> Date <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    updatedAt<span class="token operator">:</span> Date <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">//...</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>Always specify a default value or null for attributes to be reactive</strong>; ⚠️ ⚠️ ⚠️</p> <h2 id="mutations"><a href="#mutations" class="header-anchor">#</a> Mutations</h2> <p>When you want to bring the input (types) to the model data (types), you can use the mutations' method as shown in the
+example below</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">TaskModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model<span class="token operator">&lt;</span>TaskDto<span class="token operator">&gt;</span></span> <span class="token keyword">implements</span> <span class="token class-name">Task</span> <span class="token punctuation">{</span>
+
+
+    <span class="token comment">// call wehen initialize model </span>
+    <span class="token keyword">protected</span> <span class="token function">mutations</span><span class="token punctuation">(</span>data<span class="token operator">:</span> TaskDto<span class="token punctuation">)</span><span class="token operator">:</span> MutationList<span class="token operator">&lt;</span>Task<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+            <span class="token function-variable function">createdAt</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">new</span> <span class="token class-name">Date</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>createdAt<span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token function-variable function">author</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> data<span class="token punctuation">.</span>author <span class="token operator">?</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>data<span class="token punctuation">.</span>author<span class="token punctuation">.</span>firstName<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> </span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>data<span class="token punctuation">.</span>author<span class="token punctuation">.</span>lastName<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span> <span class="token operator">:</span> <span class="token string">''</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// call before save/update model (RESTapi)</span>
+    <span class="token keyword">protected</span> <span class="token function">mutateBeforeSave</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> MutationList<span class="token operator">&lt;</span>TaskDto<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+            <span class="token operator">...</span><span class="token keyword">this</span><span class="token punctuation">,</span>
+            createdAt<span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>createdAt<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            updatedAt<span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>updatedAt<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="computed-value"><a href="#computed-value" class="header-anchor">#</a> Computed value</h2> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">TaskModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model<span class="token operator">&lt;</span>TaskDto<span class="token operator">&gt;</span></span> <span class="token keyword">implements</span> <span class="token class-name">Task</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">get</span> <span class="token function">dateFormat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>createdAt<span class="token punctuation">.</span><span class="token function">toDateString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="grud-operation"><a href="#grud-operation" class="header-anchor">#</a> GRUD operation</h2> <p>Api of Model provide next api operation:</p> <ul><li><code>fetch</code> - initialize model from some source</li> <li><code>save</code> - create new record on some source or update existing</li> <li><code>delete</code> - delete record in some source</li></ul> <p>Configure api provider:</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token comment">// sample api.provider.ts</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> ModelApiProvider <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'@zidadindimon/vue-mc'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">export</span> <span class="token keyword">const</span> apiProvider<span class="token operator">:</span> ModelApiProvider<span class="token operator">&lt;</span>TaskDto<span class="token punctuation">,</span> TaskDto<span class="token punctuation">,</span> ModelFetchDto<span class="token punctuation">,</span> ModelFetchDto<span class="token operator">&gt;</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token keyword">async</span> <span class="token function">fetch</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token operator">:</span> ModelFetchDto<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>TaskDto<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token comment">// use axios or fetc for http reguest </span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token keyword">async</span> <span class="token function">save</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token operator">:</span> TaskDto<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>TaskDto<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token comment">// use axios or fetc for http reguest </span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token keyword">async</span> <span class="token function">update</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token operator">:</span> TaskDto<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span>TaskDto<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token comment">// use axios or fetc for http reguest </span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token keyword">delete</span><span class="token punctuation">(</span>data<span class="token operator">?</span><span class="token operator">:</span> ModelFetchDto<span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token builtin">any</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token comment">// use axios or fetc for http reguest </span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+</code></pre></div><p>add api provider to model</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">TaskModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model<span class="token operator">&lt;</span>TaskDto<span class="token punctuation">,</span> TaskDto<span class="token punctuation">,</span> ModelFetchDto<span class="token punctuation">,</span> ModelFetchDto<span class="token operator">&gt;</span></span> <span class="token keyword">implements</span> <span class="token class-name">Task</span> <span class="token punctuation">{</span>
+    <span class="token comment">//...</span>
+    <span class="token keyword">protected</span> <span class="token function">api</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> ModelApiProvider<span class="token operator">&lt;</span>TaskDto<span class="token punctuation">,</span> TaskDto<span class="token punctuation">,</span> ModelFetchDto<span class="token punctuation">,</span> ModelFetchDto<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> apiProvider<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">//...</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>Usage:</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code>
+@<span class="token function">Component</span><span class="token punctuation">(</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token keyword">class</span> <span class="token class-name">TodoForm</span> <span class="token keyword">extends</span> <span class="token class-name">Vue</span> <span class="token punctuation">{</span>
+    model<span class="token operator">:</span> TaskModel <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">TaskModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+    @<span class="token function">Prop</span><span class="token punctuation">(</span>Number<span class="token punctuation">)</span> id<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
+
+    @<span class="token function">Watch</span><span class="token punctuation">(</span><span class="token string">'id'</span><span class="token punctuation">)</span>
+    <span class="token keyword">async</span> <span class="token function">fetch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token keyword">void</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span>model<span class="token punctuation">.</span><span class="token function">fetch</span><span class="token punctuation">(</span><span class="token punctuation">{</span> id<span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>id <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">get</span> <span class="token function">formErrors</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token keyword">this</span><span class="token punctuation">.</span>model<span class="token punctuation">.</span>errors<span class="token punctuation">.</span>attrs <span class="token operator">||</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">async</span> <span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> <span class="token builtin">Promise</span><span class="token operator">&lt;</span><span class="token keyword">void</span><span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span>model<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment">// do something with errors</span>
+            <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span>e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="hooks"><a href="#hooks" class="header-anchor">#</a> Hooks</h3> <p>Also, you can use and override next <strong>hooks</strong></p> <ul><li><code>beforeSave</code> - run before call <code>save</code> method</li> <li><code>onSave</code> - run after call <code>save</code> method</li> <li><code>beforeFetch</code> - run before call <code>fetch</code> method</li> <li><code>onFetch</code> - run after call <code>fetch</code> method</li> <li><code>beforeDelete</code> - run before call <code>delete</code> method</li> <li><code>onError</code> - run after any api method if</li></ul> <h3 id="processing-indicators"><a href="#processing-indicators" class="header-anchor">#</a> Processing indicators</h3> <p>You can also use the following indicators when requesting a server:</p> <ul><li><code>loading</code></li> <li><code>saving</code></li> <li><code>deleting</code></li></ul> <h2 id="validation"><a href="#validation" class="header-anchor">#</a> Validation</h2> <p>Sometimes you need to validate the data before sending it to the server. This is done very simply. Just describe the
+validation rules in the model:</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">TaskModel</span> <span class="token keyword">extends</span> <span class="token class-name">Model<span class="token operator">&lt;</span>TaskDto<span class="token punctuation">,</span> TaskDto<span class="token punctuation">,</span> ModelFetchDto<span class="token punctuation">,</span> ModelFetchDto<span class="token operator">&gt;</span></span> <span class="token keyword">implements</span> <span class="token class-name">Task</span> <span class="token punctuation">{</span>
+
+    <span class="token function">rules</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">:</span> RuleList<span class="token operator">&lt;</span>Task<span class="token operator">&gt;</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+            title<span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token operator">!</span><span class="token operator">!</span>v <span class="token operator">||</span> <span class="token string">'Title can`t be empty'</span><span class="token punctuation">,</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            description<span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token operator">!</span><span class="token operator">!</span>v <span class="token operator">||</span> <span class="token string">'Description can`t be empty'</span><span class="token punctuation">,</span>
+                <span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> v<span class="token punctuation">.</span>length <span class="token operator">&gt;</span> <span class="token number">15</span> <span class="token operator">||</span> <span class="token string">'Description must be more 15 symbols'</span><span class="token punctuation">,</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+            assignTo<span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token punctuation">(</span>v<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token operator">!</span><span class="token operator">!</span>v <span class="token operator">||</span> <span class="token string">'Assign to can`t be empty'</span><span class="token punctuation">,</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>  
+<span class="token punctuation">}</span>
+</code></pre></div><p>If call save method and validation failed than method throw <code>ValidateException</code>;</p> <p>Get validation error:</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">this</span><span class="token punctuation">.</span>model<span class="token punctuation">.</span>errors<span class="token punctuation">.</span>attrs
+</code></pre></div><p>Other model error</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">this</span><span class="token punctuation">.</span>model<span class="token punctuation">.</span>errors<span class="token punctuation">.</span>model
+</code></pre></div><p>if you want to disable validation before save or update use next:</p> <div class="language-typescript extra-class"><pre class="language-typescript"><code><span class="token keyword">this</span><span class="token punctuation">.</span>model<span class="token punctuation">.</span>validationBeforeSave <span class="token operator">=</span> <span class="token boolean">false</span>
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.0123ef0b.js" defer></script><script src="/assets/js/2.58baeeff.js" defer></script><script src="/assets/js/10.bc3ec804.js" defer></script>
+  </body>
+</html>

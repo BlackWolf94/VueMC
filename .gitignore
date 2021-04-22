@@ -4,3 +4,4 @@ node_modules
 lib
 html-report
 coverage
+docs/.vuepress/dist
